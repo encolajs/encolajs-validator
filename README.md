@@ -2,6 +2,7 @@
 
 🚀 A powerful, flexible validation library that makes complex validation scenarios a breeze! Built with TypeScript and designed with developer experience in mind.
 
+![CI](https://github.com/encolajs/encolajs-validator/workflows/CI/badge.svg)
 [![npm version](https://badge.fury.io/js/@encolajs%2Fvalidator.svg)](https://badge.fury.io/js/@encolajs%2Fvalidator)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -119,6 +120,7 @@ const validator = factory.make(rules, {
 We'd love your help improving @encolajs/validator! Check out our [Contributing Guide](./CONTRIBUTING.md) to get started.
 
 Found a bug? [Open an issue](https://github.com/encolajs/validator/issues/new?template=bug_report.md)
+
 Have a great idea? [Suggest a feature](https://github.com/encolajs/validator/issues/new?template=feature_request.md)
 
 ## License
