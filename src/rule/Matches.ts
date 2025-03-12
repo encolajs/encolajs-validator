@@ -16,7 +16,9 @@ export class MatchesRule extends ValidationRule {
       // Create a RegExp object from the pattern
       return new RegExp(pattern)
     } catch (error) {
-      throw new Error(`Invalid regular expression pattern: ${error?.message}`)
+      throw new Error(
+        `Invalid regular expression pattern: ${(error as Error).message}`
+      )
     }
   }
 
