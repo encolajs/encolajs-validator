@@ -21,11 +21,14 @@
         "lint": "eslint 'src/**/*.{js,ts}'",
         "lint:fix": "eslint 'src/**/*.{js,ts}' --fix",
         "format": "prettier --write '{src,tests}/**/*.{js,ts}'",
+        "format:check": "prettier --check '{src,tests}/**/*.{js,ts}'",
         "prepare": "npm run build",
         "prepublishOnly": "npm test && npm run lint",
         "preversion": "npm run lint",
         "version": "npm run format && git add -A src",
-        "postversion": "git push && git push --tags"
+        "postversion": "git push && git push --tags",
+        "type-check": "tsc --noEmit",
+        "ci": "npm run format:check && npm run lint && npm run type-check && npm run test:coverage"
     },
     "repository": {
         "type": "git",
