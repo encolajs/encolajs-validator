@@ -246,7 +246,7 @@ export class Validator {
 
     const paths = this._findMatchingPaths(pattern, '', dataSource.getRawData())
 
-    let results = await Promise.all(
+    const results = await Promise.all(
       paths.map((path) => this.validatePath(path, dataSource))
     )
 
@@ -293,7 +293,7 @@ export class Validator {
   ): Promise<boolean> {
     if (paths.length === 0) return true
 
-    let results = await Promise.all(
+    const results = await Promise.all(
       paths.map((path) => this.validatePath(path, dataSource))
     )
 

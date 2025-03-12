@@ -54,7 +54,7 @@ function defaultMessageFormatter(
 
   // Replace {param:name} with parameters from rule
   message = message.replace(
-    /{param\:(\d+)}/g,
+    /{param:(\d+)}/g,
     (match: string, paramName: string) => {
       const paramValue = validationRule.parameters?.[parseInt(paramName)]
 

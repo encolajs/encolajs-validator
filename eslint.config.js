@@ -13,6 +13,8 @@ export default [
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unsafe-function-type": "off",
+      '@typescript-eslint/no-unused-vars': 'off',
+      'no-useless-escape': 'off'
     },
   },
 ];

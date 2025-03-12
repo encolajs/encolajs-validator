@@ -116,7 +116,7 @@ export class PlainObjectDataSource implements DataSourceInterface {
 
         if (!Array.isArray(current)) {
           // Convert current to array if needed
-          if (parent) {
+          if (parent && parentKey) {
             current = parent[parentKey] = []
           } else {
             current = this._data = []
@@ -161,7 +161,7 @@ export class PlainObjectDataSource implements DataSourceInterface {
           typeof current !== 'object'
         ) {
           // Convert current to object if needed
-          if (parent) {
+          if (parent && parentKey) {
             current = parent[parentKey] = {}
           } else {
             current = this._data = {}
@@ -200,7 +200,7 @@ export class PlainObjectDataSource implements DataSourceInterface {
     if (/^\d+$/.test(lastSegment)) {
       // Final segment is numeric, ensure current is an array
       if (!Array.isArray(current)) {
-        if (parent) {
+        if (parent && parentKey) {
           current = parent[parentKey] = []
         } else {
           current = this._data = []
@@ -225,7 +225,7 @@ export class PlainObjectDataSource implements DataSourceInterface {
         current === null ||
         typeof current !== 'object'
       ) {
-        if (parent) {
+        if (parent && parentKey) {
           current = parent[parentKey] = {}
         } else {
           current = this._data = {}
