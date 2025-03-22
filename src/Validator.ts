@@ -274,7 +274,7 @@ export class Validator {
 
     if (Array.isArray(data)) {
       for (let i = 0; i < data.length; i++) {
-        const nextPath = currentPath ? `${currentPath}[${i}]` : `[${i}]`
+        const nextPath = currentPath ? `${currentPath}.${i}` : `.${i}`
         result.push(...this._findMatchingPaths(pattern, nextPath, data[i]))
       }
     } else {
