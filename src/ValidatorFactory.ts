@@ -35,6 +35,7 @@ import { DateAfter } from './rule/DateAfter'
 import { DateBeforeRule } from './rule/DateBefore'
 import { DateBetweenRule } from './rule/DateBetween'
 import { Age } from './rule/Age'
+import { NotInListRule } from './rule/NotInList'
 
 function defaultMessageFormatter(
   ruleName: string,
@@ -264,7 +265,8 @@ export class ValidatorFactory {
       SameAsRule,
       'This field must be the same as {param:0}'
     )
-    this.register('in_list', InListRule, 'This field has not an accepted value')
+    this.register('in_list', InListRule, 'This field has a value that is not allowed')
+    this.register('not_in_list', NotInListRule, 'This field has a value that is not allowed')
     this.register(
       'password',
       PasswordRule,
