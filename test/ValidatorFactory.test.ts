@@ -110,8 +110,7 @@ describe('ValidatorFactory', () => {
 
             expect(validator).toBeInstanceOf(Validator)
 
-            // We can't easily test the custom messages directly,
-            // but we can verify the validator was created with them
+            expect(validator._customMessages).toEqual(customMessages)
         })
 
         it('should support array rule format', () => {
@@ -131,8 +130,8 @@ describe('ValidatorFactory', () => {
         })
     })
 
-    describe('default rules', () => {
-        it('should register default validation rules', async () => {
+    describe('validator', () => {
+        it('should validate basic object', async () => {
             const factory = new ValidatorFactory()
             const dataSource = createMockDataSource({
                 name: 'John',
@@ -162,6 +161,34 @@ describe('ValidatorFactory', () => {
             expect(await validator.validatePath('website', dataSource)).toBe(true)
             expect(await validator.validatePath('items', dataSource)).toBe(true)
             expect(await validator.validatePath('birthdate', dataSource)).toBe(true)
+        })
+
+        it('should validate incomplete of objects', async () => {
+            const factory = new ValidatorFactory()
+            const dataSource = createMockDataSource({
+                skills: [
+                    { name: 'JavaScript', level: null },
+                    { name: 'HTML', },
+                    {}
+                ]
+            })
+
+            const validator = factory.make({
+                'skills.*.name': 'required',
+                'skills.*.level': 'required',
+            })
+
+            await validator.validate(dataSource)
+
+            const errors = validator.getErrors()
+
+            expect(errors['skills.0.level']).toEqual(['This field is required'])
+            expect(errors['skills.1.level']).toEqual(['This field is required'])
+            expect(errors['skills.2.name']).toEqual(['This field is required'])
+            expect(errors['skills.2.level']).toEqual(['This field is required'])
+
+            // Verify the validator recognizes a single path
+            expect(await validator.validatePath('skills.2.level', dataSource)).toBe(false)
         })
     })
 })

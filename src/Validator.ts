@@ -258,29 +258,72 @@ export class Validator {
     currentPath: string = '',
     currentData: any = null
   ): string[] {
-    const data = currentData
     const result: string[] = []
 
-    if (data === null || data === undefined || typeof data !== 'object') {
+    // Get pattern parts and current path parts
+    const patternParts = pattern.split('.')
+    const currentParts = currentPath ? currentPath.split('.') : []
+    const currentDepth = currentParts.length
+
+    // If we're at the final depth of the pattern
+    if (currentDepth === patternParts.length) {
       if (PathResolver.matchesPattern(currentPath, pattern)) {
         result.push(currentPath)
       }
       return result
     }
 
-    if (currentPath && PathResolver.matchesPattern(currentPath, pattern)) {
-      result.push(currentPath)
+    // Get the next expected part from the pattern
+    const nextPatternPart = patternParts[currentDepth]
+
+    // Handle array wildcard
+    if (nextPatternPart === '*') {
+      const arrayData = Array.isArray(currentData) ? currentData : []
+      // Always process array indices even if data is missing
+      const length = Math.max(arrayData.length, 1)
+
+      for (let i = 0; i < length; i++) {
+        const nextPath = currentPath ? `${currentPath}.${i}` : `${i}`
+        const nextData = arrayData[i]
+        result.push(...this._findMatchingPaths(pattern, nextPath, nextData))
+      }
+
+      return result
     }
 
-    if (Array.isArray(data)) {
-      for (let i = 0; i < data.length; i++) {
-        const nextPath = currentPath ? `${currentPath}.${i}` : `.${i}`
-        result.push(...this._findMatchingPaths(pattern, nextPath, data[i]))
-      }
-    } else {
-      for (const key of Object.keys(data)) {
-        const nextPath = currentPath ? `${currentPath}.${key}` : key
-        result.push(...this._findMatchingPaths(pattern, nextPath, data[key]))
+    // Handle object properties
+    if (nextPatternPart !== '*') {
+      // If we have an object, traverse its properties
+      if (
+        currentData &&
+        typeof currentData === 'object' &&
+        !Array.isArray(currentData)
+      ) {
+        // Check if the next pattern part exists in the data
+        if (nextPatternPart in currentData) {
+          const nextPath = currentPath
+            ? `${currentPath}.${nextPatternPart}`
+            : nextPatternPart
+          result.push(
+            ...this._findMatchingPaths(
+              pattern,
+              nextPath,
+              currentData[nextPatternPart]
+            )
+          )
+        } else {
+          // Create path even if property doesn't exist
+          const nextPath = currentPath
+            ? `${currentPath}.${nextPatternPart}`
+            : nextPatternPart
+          result.push(...this._findMatchingPaths(pattern, nextPath, undefined))
+        }
+      } else {
+        // If we don't have an object but pattern continues, create the path
+        const nextPath = currentPath
+          ? `${currentPath}.${nextPatternPart}`
+          : nextPatternPart
+        result.push(...this._findMatchingPaths(pattern, nextPath, undefined))
       }
     }
 
