@@ -1,6 +1,7 @@
 import { ValidationRule } from '../ValidationRule'
 import { DataSourceInterface } from '../datasource/DataSourceInterface'
 import { isEmpty } from '../util/isEmpty'
+import PathResolver from '../PathResolver'
 
 /**
  * Makes a field required unless another field equals a specific value
@@ -29,7 +30,7 @@ export class RequiredUnlessRule extends ValidationRule {
     }
 
     // Get the actual field path without @
-    const fieldPath = otherPath.substring(1)
+    const fieldPath = PathResolver.resolveReferencePath(otherPath, path)
 
     // Get the value of the other field
     const otherValue = datasource.getValue(fieldPath)

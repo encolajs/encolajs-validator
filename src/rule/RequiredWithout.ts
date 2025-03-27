@@ -1,6 +1,7 @@
 import { ValidationRule } from '../ValidationRule'
 import { DataSourceInterface } from '../datasource/DataSourceInterface'
 import { isEmpty } from '../util/isEmpty'
+import PathResolver from '../PathResolver'
 
 /**
  * @fileoverview Rule that makes a field required if another field is empty
@@ -31,7 +32,7 @@ export class RequiredWithoutRule extends ValidationRule {
     }
 
     // Get the actual field path without @
-    const fieldPath = otherPath.substring(1)
+    const fieldPath = PathResolver.resolveReferencePath(otherPath, path)
 
     // Get the value of the other field
     const otherValue = datasource.getValue(fieldPath)
