@@ -30,6 +30,10 @@ export class RequiredWithRule extends ValidationRule {
     // Get the actual field path without @
     const fieldPath = PathResolver.resolveReferencePath(otherPath, path)
 
+    if (fieldPath === null) {
+      return true
+    }
+
     // Get the value of the other field
     const otherValue = datasource.getValue(fieldPath)
 
