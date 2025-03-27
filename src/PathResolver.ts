@@ -157,4 +157,60 @@ export default class PathResolver {
 
     return result
   }
+
+  static resolveReferencePath(
+    referencePath: string,
+    currentPath: string
+  ): string | null {
+    // Remove the @ prefix
+    const pathWithoutPrefix = referencePath.substring(1)
+
+    // Split both paths into segments
+    const referenceSegments = PathResolver.splitPath(pathWithoutPrefix)
+    const currentSegments = PathResolver.splitPath(currentPath)
+
+    // Verify the non-wildcard prefix matches
+    const prefixLength = referenceSegments.findIndex(
+      (segment) => segment === '*'
+    )
+    if (prefixLength === -1) {
+      // No wildcards, paths should match exactly
+      return referenceSegments.join('.')
+    }
+
+    // Check that all segments before the first wildcard match exactly
+    for (let i = 0; i < prefixLength; i++) {
+      if (referenceSegments[i] !== currentSegments[i]) {
+        return null
+      }
+    }
+
+    // For each wildcard (*) in the reference path, find the corresponding index
+    // from the current path
+    const resolvedSegments = referenceSegments.map((segment, index) => {
+      if (segment === '*') {
+        // Find the corresponding segment in the current path
+        // We need to match array positions, so find where this wildcard is in the
+        // reference path's array structure and get the same position from current path
+        let arrayIndexCount = 0
+        const targetArrayIndexCount = referenceSegments
+          .slice(0, index)
+          .filter((s) => s === '*').length
+
+        // Find the matching array index in the current path
+        for (let i = 0; i < currentSegments.length; i++) {
+          if (/^\d+$/.test(currentSegments[i])) {
+            if (arrayIndexCount === targetArrayIndexCount) {
+              return currentSegments[i]
+            }
+            arrayIndexCount++
+          }
+        }
+        return segment // Keep as * if no match found
+      }
+      return segment
+    })
+
+    return resolvedSegments.join('.')
+  }
 }
