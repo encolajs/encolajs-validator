@@ -170,12 +170,19 @@ describe('ValidatorFactory', () => {
                     { name: 'JavaScript', level: null },
                     { name: 'HTML', },
                     {}
+                ],
+                jobs: [
+                    { start_date: '2020-01-01', end_date: '2021-01-01', current: false },
+                    { start_date: '2020-01-01', end_date: null, current: false },
+                    { start_date: '2021-01-01', end_date: null, current: true },
                 ]
             })
 
             const validator = factory.make({
                 'skills.*.name': 'required',
                 'skills.*.level': 'required',
+                'jobs.*.start_date': 'required|date',
+                'jobs.*.end_date': 'required_unless:@jobs.*.current,true|date',
             })
 
             await validator.validate(dataSource)
@@ -186,6 +193,9 @@ describe('ValidatorFactory', () => {
             expect(errors['skills.1.level']).toEqual(['This field is required'])
             expect(errors['skills.2.name']).toEqual(['This field is required'])
             expect(errors['skills.2.level']).toEqual(['This field is required'])
+            expect(errors['jobs.0.end_date']).toEqual(undefined)
+            expect(errors['jobs.1.end_date']).toEqual(['This field is required'])
+            expect(errors['jobs.2.end_date']).toEqual(undefined)
 
             // Verify the validator recognizes a single path
             expect(await validator.validatePath('skills.2.level', dataSource)).toBe(false)

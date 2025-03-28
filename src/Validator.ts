@@ -120,33 +120,7 @@ export class Validator {
       const ruleName = parts[0].trim()
       const paramStr = parts.slice(1).join(':')
 
-      const paramArray: string[] = []
-      if (paramStr) {
-        let currentParam = ''
-        let inReference = false
-
-        for (let i = 0; i < paramStr.length; i++) {
-          const char = paramStr[i]
-
-          if (char === '@') {
-            inReference = true
-            currentParam += char
-          } else if (char === ',' && !inReference) {
-            paramArray.push(currentParam.trim())
-            currentParam = ''
-          } else {
-            currentParam += char
-
-            if (inReference && (char === ' ' || i === paramStr.length - 1)) {
-              inReference = false
-            }
-          }
-        }
-
-        if (currentParam) {
-          paramArray.push(currentParam.trim())
-        }
-      }
+      const paramArray: string[] = paramStr.split(',')
 
       const validationRule = this._ruleRegistry.get(ruleName, paramArray)
       if (!validationRule) {
