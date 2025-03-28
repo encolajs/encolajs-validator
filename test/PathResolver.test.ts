@@ -144,12 +144,12 @@ describe('PathResolver', () => {
 
     describe('resolveReferencePath', () => {
         it('should resolve simple path', () => {
-            expect(PathResolver.resolveReferencePath('@user', 'email')).toBe('user')
-            expect(PathResolver.resolveReferencePath('@user', 'skills.0.name')).toBe('user')
+            expect(PathResolver.resolveReferencePath('@user', 'email')).toBe('@user')
+            expect(PathResolver.resolveReferencePath('@user', '#skills.0.name')).toBe('@user')
         })
         it('should resolve nested paths', () => {
-            expect(PathResolver.resolveReferencePath('@skills.*.name', 'skills.2.level')).toBe('skills.2.name')
-            expect(PathResolver.resolveReferencePath('@jobs.*.supervisors.*.name', 'jobs.2.supervisors.3.email')).toBe('jobs.2.supervisors.3.name')
+            expect(PathResolver.resolveReferencePath('@skills.*.name', 'skills.2.level')).toBe('@skills.2.name')
+            expect(PathResolver.resolveReferencePath('@jobs.*.supervisors.*.name', 'jobs.2.supervisors.3.email')).toBe('@jobs.2.supervisors.3.name')
         })
         it('should not resolve non-matching nested paths', () => {
             expect(PathResolver.resolveReferencePath('@jobs.*.name', 'skills.2.level')).toBe(null)

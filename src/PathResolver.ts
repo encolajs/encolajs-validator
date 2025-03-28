@@ -162,8 +162,8 @@ export default class PathResolver {
     referencePath: string,
     currentPath: string
   ): string | null {
-    // Remove the @ prefix
-    const pathWithoutPrefix = referencePath.substring(1)
+    const hasPrefix = referencePath.startsWith('@')
+    const pathWithoutPrefix = hasPrefix ? referencePath.substring(1) : referencePath
 
     // Split both paths into segments
     const referenceSegments = PathResolver.splitPath(pathWithoutPrefix)
@@ -175,7 +175,7 @@ export default class PathResolver {
     )
     if (prefixLength === -1) {
       // No wildcards, paths should match exactly
-      return referenceSegments.join('.')
+      return (hasPrefix ? '@' : '') + referenceSegments.join('.')
     }
 
     // Check that all segments before the first wildcard match exactly
@@ -211,6 +211,6 @@ export default class PathResolver {
       return segment
     })
 
-    return resolvedSegments.join('.')
+    return (hasPrefix ? '@' : '') + resolvedSegments.join('.')
   }
 }

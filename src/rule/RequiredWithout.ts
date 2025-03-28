@@ -39,7 +39,10 @@ export class RequiredWithoutRule extends ValidationRule {
     }
 
     // Get the value of the other field
-    const otherValue = datasource.getValue(fieldPath)
+    const otherValue = this.resolveParameter(
+      fieldPath,
+      datasource
+    )
 
     // If the other field is empty, this field is required
     const isOtherFieldEmpty = isEmpty(otherValue)

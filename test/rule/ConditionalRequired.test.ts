@@ -3,7 +3,7 @@ import { RequiredWithRule } from '../../src/rule/RequiredWith'
 import { RequiredWithoutRule } from '../../src/rule/RequiredWithout'
 import { RequiredWhenRule } from '../../src/rule/RequiredWhen'
 import { RequiredUnlessRule } from '../../src/rule/RequiredUnless'
-import { createRealDataSource } from '../utils'
+import { createMockDataSource, createRealDataSource } from '../utils'
 
 describe('Conditional Required Rules', () => {
     describe('RequiredWithRule', () => {
@@ -100,6 +100,21 @@ describe('Conditional Required Rules', () => {
             expect(rule.validate('', 'tax', dataSource)).toBe(false) // Should be required
         })
 
+        it('should make field required when using deep path', () => {
+            const rule = new RequiredWhenRule(['@jobs.*.current', true])
+            const dataSource = createMockDataSource({
+                jobs: [
+                    // not the current job, end_date is required
+                    { end_date: null, current: false },
+                    // current job, end date is not required
+                    { end_date: null, current: true }
+                ]
+            })
+
+            expect(rule.validate(null, 'jobs.0.end_date', dataSource)).toBe(true)
+            expect(rule.validate(null, 'jobs.1.end_date', dataSource)).toBe(false)
+        })
+
         it('should throw error if parameter is not a field reference', () => {
             const rule = new RequiredWhenRule(['not_a_reference', 'value'])
             const dataSource = createRealDataSource()
@@ -129,6 +144,21 @@ describe('Conditional Required Rules', () => {
             })
 
             expect(rule.validate('', 'vat_number', dataSource)).toBe(true) // Not required, passes
+        })
+
+        it('should make field required when using deep path', () => {
+            const rule = new RequiredUnlessRule(['@jobs.*.current', false])
+            const dataSource = createMockDataSource({
+                jobs: [
+                    // not the current job, end_date is required
+                    { end_date: null, current: false },
+                    // current job, end date is not required
+                    { end_date: null, current: true }
+                ]
+            })
+
+            expect(rule.validate(null, 'jobs.0.end_date', dataSource)).toBe(true)
+            expect(rule.validate(null, 'jobs.1.end_date', dataSource)).toBe(false)
         })
 
         it('should throw error if parameter is not a field reference', () => {

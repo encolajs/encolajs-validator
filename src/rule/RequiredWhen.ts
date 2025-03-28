@@ -37,18 +37,15 @@ export class RequiredWhenRule extends ValidationRule {
       return true
     }
 
-    // Get the value of the other field
-    const otherValue = datasource.getValue(fieldPath)
-
     // Resolve the expected value (could be a reference to another field)
-    const resolvedExpectedValue = this.resolveParameter(
-      expectedValue,
+    const resolvedExpectedValue = convertToBoolean(this.resolveParameter(
+      fieldPath,
       datasource
-    )
+    ))
 
     // Check if the other field matches the expected value
     // Use loose comparison to handle cases like "1" == 1
-    const matches = otherValue == resolvedExpectedValue
+    const matches = expectedValue == resolvedExpectedValue
 
     if (matches) {
       // This field is now required
