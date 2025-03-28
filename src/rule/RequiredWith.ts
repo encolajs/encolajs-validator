@@ -35,10 +35,7 @@ export class RequiredWithRule extends ValidationRule {
     }
 
     // Get the value of the other field
-    const otherValue = this.resolveParameter(
-      fieldPath,
-      datasource
-    )
+    const otherValue = this.resolveParameter(fieldPath, datasource)
 
     // If the other field has a value, this field is required
     const isOtherFieldPopulated = !isEmpty(otherValue)

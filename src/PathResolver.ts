@@ -163,7 +163,9 @@ export default class PathResolver {
     currentPath: string
   ): string | null {
     const hasPrefix = referencePath.startsWith('@')
-    const pathWithoutPrefix = hasPrefix ? referencePath.substring(1) : referencePath
+    const pathWithoutPrefix = hasPrefix
+      ? referencePath.substring(1)
+      : referencePath
 
     // Split both paths into segments
     const referenceSegments = PathResolver.splitPath(pathWithoutPrefix)

@@ -38,10 +38,9 @@ export class RequiredUnlessRule extends ValidationRule {
     }
 
     // Resolve the expected value (could be a reference to another field)
-    const resolvedExpectedValue = convertToBoolean(this.resolveParameter(
-      fieldPath,
-      datasource
-    ))
+    const resolvedExpectedValue = convertToBoolean(
+      this.resolveParameter(fieldPath, datasource)
+    )
 
     // Check if the other field matches the expected value
     // Use loose comparison to handle cases like "1" == 1
