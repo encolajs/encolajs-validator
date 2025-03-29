@@ -163,7 +163,7 @@ describe('ValidatorFactory', () => {
             expect(await validator.validatePath('birthdate', dataSource)).toBe(true)
         })
 
-        it('should validate incomplete of objects', async () => {
+        it('should validate incomplete objects', async () => {
             const factory = new ValidatorFactory()
             const dataSource = createMockDataSource({
                 skills: [

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { AlphaRule } from '../../src/rule/Alpha'
 import { AlphaNumericRule } from '../../src/rule/AlphaNumeric'
 import { ContainsRule } from '../../src/rule/Contains'
@@ -11,6 +11,8 @@ import { SlugRule } from '../../src/rule/Slug'
 import { StartsWithRule } from '../../src/rule/StartsWith'
 import { UrlRule } from '../../src/rule/Url'
 import { createRealDataSource } from '../utils'
+import { PasswordRule } from '../../src/rule/Password'
+import { PlainObjectDataSource } from '../../src'
 
 describe('String Validation Rules', () => {
     describe('AlphaRule', () => {
@@ -197,6 +199,153 @@ describe('String Validation Rules', () => {
 
             expect(() => rule.validate('test', 'path', dataSource))
                 .toThrow('MinLengthRule requires a minimum length parameter')
+        })
+    })
+
+    describe('PasswordRule', () => {
+        let rule
+        let datasource
+
+        beforeEach(() => {
+            // Create a new rule instance before each test
+            rule = new PasswordRule()
+            datasource = new PlainObjectDataSource({})
+        })
+
+        // Test empty values
+        it('should return true for empty values', () => {
+            expect(rule.validate('', 'password', datasource)).toBe(true)
+            expect(rule.validate(null, 'password', datasource)).toBe(true)
+            expect(rule.validate(undefined, 'password', datasource)).toBe(true)
+        })
+
+        // Test invalid parameters
+        it('should throw an error for invalid parameters', () => {
+            rule.parameters = [-1, 10]
+            expect(() => rule.validate('Password1!', 'password', datasource)).toThrow()
+
+            rule.parameters = [20, 10]
+            expect(() => rule.validate('Password1!', 'password', datasource)).toThrow()
+
+            rule.parameters = ['invalid', 'params']
+            expect(() => rule.validate('Password1!', 'password', datasource)).toThrow()
+        })
+
+        // Test length validation
+        it('should validate password length correctly', () => {
+            rule.parameters = [8, 32]
+
+            // Too short
+            expect(rule.validate('Pass1!', 'password', datasource)).toBe(false)
+
+            // Exact minimum length
+            expect(rule.validate('Passw0rd!', 'password', datasource)).toBe(true)
+
+            // Within valid range
+            expect(rule.validate('ThisIsAValidP4ssw0rd!', 'password', datasource)).toBe(true)
+
+            // Exact maximum length
+            const exactMaxLength = 'A'.repeat(29) + 'B1!'
+            expect(exactMaxLength.length).toBe(32)
+            expect(rule.validate(exactMaxLength, 'password', datasource)).toBe(true)
+
+            // Too long
+            const tooLong = 'A'.repeat(31) + 'B1!'
+            expect(tooLong.length).toBe(34)
+            expect(rule.validate(tooLong, 'password', datasource)).toBe(false)
+        })
+
+        // Test custom length parameters
+        it('should respect custom length parameters', () => {
+            rule.parameters = [6, 12]
+
+            // Too short for default but valid for custom
+            expect(rule.validate('Pass1!', 'password', datasource)).toBe(true)
+
+            // Too long for custom but valid for default
+            expect(rule.validate('ThisIsALongerP4ssword!', 'password', datasource)).toBe(false)
+        })
+
+        // Test character requirements
+        it('should validate character requirements', () => {
+            rule.parameters = [8, 32]
+
+            // Missing uppercase
+            expect(rule.validate('password1!', 'password', datasource)).toBe(false)
+
+            // Missing number
+            expect(rule.validate('Password!', 'password', datasource)).toBe(false)
+
+            // Missing special character
+            expect(rule.validate('Password1', 'password', datasource)).toBe(false)
+
+            // All requirements met
+            expect(rule.validate('Password1!', 'password', datasource)).toBe(true)
+        })
+
+        // Test edge cases with different special characters
+        it('should accept different special characters', () => {
+            rule.parameters = [8, 32]
+
+            expect(rule.validate('Password1@', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1#', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1$', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1%', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1^', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1&', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1*', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1(', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1)', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1-', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1_', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1=', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1+', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1[', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1]', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1{', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1}', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1;', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1:', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1"', 'password', datasource)).toBe(true)
+            expect(rule.validate("Password1'", 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1\\', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1|', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1,', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1.', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1<', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1>', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1/', 'password', datasource)).toBe(true)
+            expect(rule.validate('Password1?', 'password', datasource)).toBe(true)
+        })
+
+        // Test type coercion
+        it('should handle type coercion', () => {
+            rule.parameters = [8, 32]
+
+            // Number that can be converted to valid string
+            const numberValue = 12345678
+            expect(rule.validate(numberValue, 'password', datasource)).toBe(false) // No uppercase or special chars
+
+            // Object with toString method
+            const objectValue = {
+                toString: () => 'Password1!'
+            }
+            expect(rule.validate(objectValue, 'password', datasource)).toBe(true)
+        })
+
+        // Test default parameters
+        it('should use default parameters if not provided', () => {
+            // Create a new rule without parameters (using default 8, 32)
+            const defaultRule = new PasswordRule()
+            defaultRule.parameters = undefined
+
+            // Should still work with default parameters
+            expect(defaultRule.validate('Short1!', 'password', datasource)).toBe(false) // Too short
+            expect(defaultRule.validate('Password1!', 'password', datasource)).toBe(true) // Valid
+
+            const veryLongPassword = 'P' + 'a'.repeat(35) + 'ssword1!'
+            expect(veryLongPassword.length).toBe(44)
+            expect(defaultRule.validate(veryLongPassword, 'password', datasource)).toBe(false) // Too long
         })
     })
 

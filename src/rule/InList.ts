@@ -13,7 +13,10 @@ export class InListRule extends ValidationRule {
         'InListRule requires at least one allowed value parameter'
       )
     }
+    const parameters = this.parameters.map((param) => {
+      return String(this.resolveParameter(param, datasource))
+    })
 
-    return this.parameters.includes(String(value))
+    return parameters.includes(String(value))
   }
 }

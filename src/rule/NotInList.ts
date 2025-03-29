@@ -14,6 +14,10 @@ export class NotInListRule extends ValidationRule {
       )
     }
 
-    return !this.parameters.includes(String(value))
+    const parameters = this.parameters.map((param) => {
+      return String(this.resolveParameter(param, datasource))
+    })
+
+    return !parameters.includes(String(value))
   }
 }
