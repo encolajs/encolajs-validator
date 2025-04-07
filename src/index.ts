@@ -10,8 +10,3 @@ export {
   type CustomMessagesConfig,
   ValidatorOptions,
 } from './types'
-
-// Data sources
-export { DataSourceInterface } from './datasource/DataSourceInterface'
-export { PlainObjectDataSource } from './datasource/PlainObjectDataSource'
-export { TentativeValuesDataSource } from './datasource/TentativeValuesDataSource'

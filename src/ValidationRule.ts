@@ -1,4 +1,5 @@
-import { DataSourceInterface } from './datasource/DataSourceInterface'
+import { getValueFn } from './types'
+import getValue from './util/getValue'
 
 /**
  * Base class for all validation rules
@@ -6,24 +7,26 @@ import { DataSourceInterface } from './datasource/DataSourceInterface'
 export abstract class ValidationRule {
   /** Validation rule parameters */
   public parameters?: any[]
+  public getValueFn: getValueFn
 
   constructor(parameters?: any[]) {
     this.parameters = parameters
+    this.getValueFn = getValue
   }
 
   abstract validate(
     value: any,
     path: string,
-    datasource: DataSourceInterface
+    data: object
   ): boolean | Promise<boolean>
 
-  resolveParameter(param: any, datasource?: DataSourceInterface): any {
-    if (typeof param !== 'string' || !param.startsWith('@') || !datasource) {
+  resolveParameter(param: any, data?: object): any {
+    if (typeof param !== 'string' || !param.startsWith('@') || !data) {
       return param
     }
 
     const fieldPath = param.substring(1)
 
-    return datasource.getValue(fieldPath)
+    return this.getValueFn(fieldPath, data)
   }
 }

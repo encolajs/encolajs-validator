@@ -1,13 +1,12 @@
 import { describe, it, expect } from 'vitest'
 import { ArrayMinLengthRule } from '../../src/rule/ArrayMinLength'
 import { ArrayMaxLengthRule } from '../../src/rule/ArrayMaxLength'
-import { createRealDataSource } from '../utils'
 
 describe('Array Validation Rules', () => {
     describe('ArrayMinLengthRule', () => {
         it('should validate arrays meeting minimum length', () => {
             const rule = new ArrayMinLengthRule(['2'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(rule.validate([1, 2], 'path', dataSource)).toBe(true)
             expect(rule.validate([1, 2, 3], 'path', dataSource)).toBe(true)
@@ -16,7 +15,7 @@ describe('Array Validation Rules', () => {
 
         it('should invalidate arrays below minimum length', () => {
             const rule = new ArrayMinLengthRule(['2'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(rule.validate([], 'path', dataSource)).toBe(false)
             expect(rule.validate([1], 'path', dataSource)).toBe(false)
@@ -25,7 +24,7 @@ describe('Array Validation Rules', () => {
 
         it('should invalidate non-array values', () => {
             const rule = new ArrayMinLengthRule(['2'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(rule.validate('not an array', 'path', dataSource)).toBe(false)
             expect(rule.validate(123, 'path', dataSource)).toBe(false)
@@ -36,7 +35,7 @@ describe('Array Validation Rules', () => {
 
         it('should throw error if min length parameter is missing', () => {
             const rule = new ArrayMinLengthRule([])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(() => rule.validate([], 'path', dataSource))
                 .toThrow('ArrayMinLengthRule requires a minimum length parameter')
@@ -44,7 +43,7 @@ describe('Array Validation Rules', () => {
 
         it('should throw error if min length parameter is invalid', () => {
             const rule = new ArrayMinLengthRule(['invalid'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(() => rule.validate([], 'path', dataSource))
                 .toThrow('ArrayMinLengthRule minimum length must be a non-negative integer')
@@ -52,7 +51,7 @@ describe('Array Validation Rules', () => {
 
         it('should throw error if min length is negative', () => {
             const rule = new ArrayMinLengthRule(['-1'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(() => rule.validate([], 'path', dataSource))
                 .toThrow('ArrayMinLengthRule minimum length must be a non-negative integer')
@@ -62,7 +61,7 @@ describe('Array Validation Rules', () => {
     describe('ArrayMaxLengthRule', () => {
         it('should validate arrays not exceeding maximum length', () => {
             const rule = new ArrayMaxLengthRule(['3'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(rule.validate([], 'path', dataSource)).toBe(true)
             expect(rule.validate([1], 'path', dataSource)).toBe(true)
@@ -73,7 +72,7 @@ describe('Array Validation Rules', () => {
 
         it('should invalidate arrays exceeding maximum length', () => {
             const rule = new ArrayMaxLengthRule(['3'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(rule.validate([1, 2, 3, 4], 'path', dataSource)).toBe(false)
             expect(rule.validate([1, 2, 3, 4, 5], 'path', dataSource)).toBe(false)
@@ -82,7 +81,7 @@ describe('Array Validation Rules', () => {
 
         it('should invalidate non-array values', () => {
             const rule = new ArrayMaxLengthRule(['3'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(rule.validate('not an array', 'path', dataSource)).toBe(false)
             expect(rule.validate(123, 'path', dataSource)).toBe(false)
@@ -93,7 +92,7 @@ describe('Array Validation Rules', () => {
 
         it('should throw error if max length parameter is missing', () => {
             const rule = new ArrayMaxLengthRule([])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(() => rule.validate([], 'path', dataSource))
                 .toThrow('ArrayMaxLengthRule requires a maximum length parameter')
@@ -101,7 +100,7 @@ describe('Array Validation Rules', () => {
 
         it('should throw error if max length parameter is invalid', () => {
             const rule = new ArrayMaxLengthRule(['invalid'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(() => rule.validate([], 'path', dataSource))
                 .toThrow('ArrayMaxLengthRule maximum length must be a non-negative integer')
@@ -109,7 +108,7 @@ describe('Array Validation Rules', () => {
 
         it('should throw error if max length is negative', () => {
             const rule = new ArrayMaxLengthRule(['-1'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(() => rule.validate([], 'path', dataSource))
                 .toThrow('ArrayMaxLengthRule maximum length must be a non-negative integer')
@@ -120,7 +119,7 @@ describe('Array Validation Rules', () => {
         it('should validate array within min and max constraints', () => {
             const minRule = new ArrayMinLengthRule(['2'])
             const maxRule = new ArrayMaxLengthRule(['4'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             // Too short
             let array = [1]

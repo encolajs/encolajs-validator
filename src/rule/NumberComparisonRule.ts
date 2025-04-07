@@ -1,5 +1,4 @@
 import { ValidationRule } from '../ValidationRule'
-import { DataSourceInterface } from '../datasource/DataSourceInterface'
 import { isEmpty } from '../util/isEmpty'
 import { isNumber, toNumber } from '../util/isNumber'
 
@@ -16,14 +15,7 @@ export abstract class NumberComparisonRule extends ValidationRule {
    */
   protected abstract compare(a: number, b: number): boolean
 
-  /**
-   * Validates a value using number comparison
-   * @param value - The value to validate
-   * @param path - The path being validated
-   * @param datasource - The data source
-   * @returns Whether the value is valid
-   */
-  validate(value: any, path: string, datasource: DataSourceInterface): boolean {
+  validate(value: any, path: string, data: object): boolean {
     // Skip validation if the value is empty (unless required is also specified)
     if (isEmpty(value, false, false)) {
       return true
@@ -48,10 +40,7 @@ export abstract class NumberComparisonRule extends ValidationRule {
       typeof comparisonValue === 'string' &&
       comparisonValue.startsWith('@')
     ) {
-      resolvedComparisonValue = this.resolveParameter(
-        comparisonValue,
-        datasource
-      )
+      resolvedComparisonValue = this.resolveParameter(comparisonValue, data)
 
       // Check if the resolved value is a valid number
       if (!isNumber(resolvedComparisonValue)) {

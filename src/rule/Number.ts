@@ -1,10 +1,9 @@
 import { ValidationRule } from '../ValidationRule'
-import { DataSourceInterface } from '../datasource/DataSourceInterface'
 import { isEmpty } from '../util/isEmpty'
 import { isNumber } from '../util/isNumber'
 
 export class NumberRule extends ValidationRule {
-  validate(value: any, path: string, datasource: DataSourceInterface): boolean {
+  validate(value: any, path: string, data: object): boolean {
     if (isEmpty(value, false, false)) {
       return true
     }

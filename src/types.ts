@@ -18,6 +18,8 @@ export interface CustomMessagesConfig {
   [pathAndRule: string]: string
 }
 
+export type getValueFn = (value: string, data: any) => any
+
 /**
  * Options for creating a validator
  */
@@ -26,6 +28,8 @@ export interface ValidatorOptions {
   messageFormatter?: messageFormatter
   /** Custom messages */
   customMessages?: CustomMessagesConfig
+  /** Custom messages */
+  getValueFn?: getValueFn
 }
 
 export interface FormStateOptions {

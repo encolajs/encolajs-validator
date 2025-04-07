@@ -1,10 +1,9 @@
 import { ValidationRule } from '../ValidationRule'
-import { DataSourceInterface } from '../datasource/DataSourceInterface'
 import { isEmpty } from '../util/isEmpty'
 
 export class PasswordRule extends ValidationRule {
   public parameters = [8, 32]
-  validate(value: any, path: string, datasource: DataSourceInterface): boolean {
+  validate(value: any, path: string, data: object): boolean {
     if (isEmpty(value)) {
       return true
     }

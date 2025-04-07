@@ -1,9 +1,8 @@
 import { ValidationRule } from '../ValidationRule'
-import { DataSourceInterface } from '../datasource/DataSourceInterface'
 import { isEmpty } from '../util/isEmpty'
 
 export class NotInListRule extends ValidationRule {
-  validate(value: any, path: string, datasource: DataSourceInterface): boolean {
+  validate(value: any, path: string, data: object): boolean {
     if (isEmpty(value)) {
       return true
     }
@@ -15,7 +14,7 @@ export class NotInListRule extends ValidationRule {
     }
 
     const parameters = this.parameters.map((param) => {
-      return String(this.resolveParameter(param, datasource))
+      return String(this.resolveParameter(param, data))
     })
 
     return !parameters.includes(String(value))

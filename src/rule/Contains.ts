@@ -1,9 +1,8 @@
 import { ValidationRule } from '../ValidationRule'
-import { DataSourceInterface } from '../datasource/DataSourceInterface'
 import { isEmpty } from '../util/isEmpty'
 
 export class ContainsRule extends ValidationRule {
-  validate(value: any, path: string, datasource: DataSourceInterface): boolean {
+  validate(value: any, path: string, data: object): boolean {
     // Skip validation if the value is empty
     if (isEmpty(value)) {
       return true
@@ -16,9 +15,7 @@ export class ContainsRule extends ValidationRule {
       throw new Error('ContainsRule requires a substring parameter')
     }
 
-    const resolvedSubstring = String(
-      this.resolveParameter(substring, datasource)
-    )
+    const resolvedSubstring = String(this.resolveParameter(substring, data))
 
     return stringValue.includes(resolvedSubstring)
   }

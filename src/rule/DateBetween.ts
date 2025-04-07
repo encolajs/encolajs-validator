@@ -1,9 +1,8 @@
 import { ValidationRule } from '../ValidationRule'
-import { DataSourceInterface } from '../datasource/DataSourceInterface'
 import { isEmpty } from '../util/isEmpty'
 
 export class DateBetweenRule extends ValidationRule {
-  validate(value: any, path: string, datasource: DataSourceInterface): boolean {
+  validate(value: any, path: string, data: object): boolean {
     if (isEmpty(value)) {
       return true
     }
@@ -27,7 +26,7 @@ export class DateBetweenRule extends ValidationRule {
     }
 
     // Handle field reference or direct date string for min date
-    const resolvedMinValue = this.resolveParameter(minValue, datasource)
+    const resolvedMinValue = this.resolveParameter(minValue, data)
 
     let minDate: Date
 
@@ -41,7 +40,7 @@ export class DateBetweenRule extends ValidationRule {
     }
 
     // Handle field reference or direct date string for max date
-    const resolvedMaxValue = this.resolveParameter(maxValue, datasource)
+    const resolvedMaxValue = this.resolveParameter(maxValue, data)
 
     let maxDate: Date
 

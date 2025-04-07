@@ -4,7 +4,6 @@ import { DateBeforeRule } from '../../src/rule/DateBefore'
 import { DateBetweenRule } from '../../src/rule/DateBetween'
 import { DateFormatRule } from '../../src/rule/DateFormat'
 import { Age } from '../../src/rule/Age'
-import { createRealDataSource } from '../utils'
 
 describe('Date Validation Rules', () => {
     // For tests involving "now", we'll mock Date
@@ -22,7 +21,7 @@ describe('Date Validation Rules', () => {
     describe('DateAfter', () => {
         it('should validate dates after the comparison date', () => {
             const rule = new DateAfter(['2023-01-01'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(rule.validate('2023-01-02', 'path', dataSource)).toBe(true)
             expect(rule.validate('2023-02-01', 'path', dataSource)).toBe(true)
@@ -31,7 +30,7 @@ describe('Date Validation Rules', () => {
 
         it('should invalidate dates not after the comparison date', () => {
             const rule = new DateAfter(['2023-01-01'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(rule.validate('2023-01-01', 'path', dataSource)).toBe(false)
             expect(rule.validate('2022-12-31', 'path', dataSource)).toBe(false)
@@ -40,7 +39,7 @@ describe('Date Validation Rules', () => {
 
         it('should support "now" as comparison date', () => {
             const rule = new DateAfter(['now'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             // With mocked date (2023-05-15), these should pass
             expect(rule.validate('2023-05-16', 'path', dataSource)).toBe(true)
@@ -55,9 +54,9 @@ describe('Date Validation Rules', () => {
 
         it('should support field reference for comparison date', () => {
             const rule = new DateAfter(['@min.date'])
-            const dataSource = createRealDataSource({
+            const dataSource = {
                 min: { date: '2023-01-01' }
-            })
+            }
 
             expect(rule.validate('2023-01-02', 'path', dataSource)).toBe(true)
             expect(rule.validate('2022-12-31', 'path', dataSource)).toBe(false)
@@ -65,7 +64,7 @@ describe('Date Validation Rules', () => {
 
         it('should throw error if comparison date parameter is missing', () => {
             const rule = new DateAfter([])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(() => rule.validate('2023-01-01', 'path', dataSource))
                 .toThrow('AfterDateRule requires a date to compare against')
@@ -73,7 +72,7 @@ describe('Date Validation Rules', () => {
 
         it('should invalidate invalid dates', () => {
             const rule = new DateAfter(['2023-01-01'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(rule.validate('not-a-date', 'path', dataSource)).toBe(false)
             expect(rule.validate('invalid-date', 'path', dataSource)).toBe(false)
@@ -81,7 +80,7 @@ describe('Date Validation Rules', () => {
 
         it('should throw error if comparison date is invalid', () => {
             const rule = new DateAfter(['not-a-date'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(() => rule.validate('2023-01-01', 'path', dataSource))
                 .toThrow('AfterDateRule comparison value is not a valid date')
@@ -89,7 +88,7 @@ describe('Date Validation Rules', () => {
 
         it('should skip validation for empty values', () => {
             const rule = new DateAfter(['2023-01-01'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(rule.validate('', 'path', dataSource)).toBe(true)
             expect(rule.validate(null, 'path', dataSource)).toBe(true)
@@ -100,7 +99,7 @@ describe('Date Validation Rules', () => {
     describe('DateBeforeRule', () => {
         it('should validate dates before the comparison date', () => {
             const rule = new DateBeforeRule(['2023-01-01'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(rule.validate('2022-12-31', 'path', dataSource)).toBe(true)
             expect(rule.validate('2022-01-01', 'path', dataSource)).toBe(true)
@@ -109,7 +108,7 @@ describe('Date Validation Rules', () => {
 
         it('should invalidate dates not before the comparison date', () => {
             const rule = new DateBeforeRule(['2023-01-01'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(rule.validate('2023-01-01', 'path', dataSource)).toBe(false)
             expect(rule.validate('2023-01-02', 'path', dataSource)).toBe(false)
@@ -118,7 +117,7 @@ describe('Date Validation Rules', () => {
 
         it('should support "now" as comparison date', () => {
             const rule = new DateBeforeRule(['now'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             // With mocked date (2023-05-15), these should pass
             expect(rule.validate('2023-05-14', 'path', dataSource)).toBe(true)
@@ -133,9 +132,9 @@ describe('Date Validation Rules', () => {
 
         it('should support field reference for comparison date', () => {
             const rule = new DateBeforeRule(['@max.date'])
-            const dataSource = createRealDataSource({
+            const dataSource = {
                 max: { date: '2023-01-01' }
-            })
+            }
 
             expect(rule.validate('2022-12-31', 'path', dataSource)).toBe(true)
             expect(rule.validate('2023-01-02', 'path', dataSource)).toBe(false)
@@ -143,7 +142,7 @@ describe('Date Validation Rules', () => {
 
         it('should throw error if comparison date parameter is missing', () => {
             const rule = new DateBeforeRule([])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(() => rule.validate('2023-01-01', 'path', dataSource))
                 .toThrow('BeforeDateRule requires a date to compare against')
@@ -151,7 +150,7 @@ describe('Date Validation Rules', () => {
 
         it('should throw error if comparison date is invalid', () => {
             const rule = new DateBeforeRule(['not-a-date'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(() => rule.validate('2023-01-01', 'path', dataSource))
                 .toThrow('BeforeDateRule comparison value is not a valid date')
@@ -161,7 +160,7 @@ describe('Date Validation Rules', () => {
     describe('DateBetweenRule', () => {
         it('should validate dates between min and max dates', () => {
             const rule = new DateBetweenRule(['2023-01-01', '2023-12-31'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(rule.validate('2023-01-01', 'path', dataSource)).toBe(true) // Inclusive
             expect(rule.validate('2023-06-15', 'path', dataSource)).toBe(true)
@@ -170,7 +169,7 @@ describe('Date Validation Rules', () => {
 
         it('should invalidate dates outside min and max dates', () => {
             const rule = new DateBetweenRule(['2023-01-01', '2023-12-31'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(rule.validate('2022-12-31', 'path', dataSource)).toBe(false)
             expect(rule.validate('2024-01-01', 'path', dataSource)).toBe(false)
@@ -179,7 +178,7 @@ describe('Date Validation Rules', () => {
         it('should support "now" as min or max date', () => {
             // min=2023-01-01, max=now (2023-05-15)
             const rule1 = new DateBetweenRule(['2023-01-01', 'now'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(rule1.validate('2023-01-01', 'path', dataSource)).toBe(true) // Inclusive
             expect(rule1.validate('2023-03-15', 'path', dataSource)).toBe(true)
@@ -199,12 +198,12 @@ describe('Date Validation Rules', () => {
 
         it('should support field references for min and max dates', () => {
             const rule = new DateBetweenRule(['@range.min', '@range.max'])
-            const dataSource = createRealDataSource({
+            const dataSource = {
                 range: {
                     min: '2023-01-01',
                     max: '2023-12-31'
                 }
-            })
+            }
 
             expect(rule.validate('2023-06-15', 'path', dataSource)).toBe(true)
             expect(rule.validate('2022-12-31', 'path', dataSource)).toBe(false)
@@ -213,7 +212,7 @@ describe('Date Validation Rules', () => {
 
         it('should throw error if min date parameter is missing', () => {
             const rule = new DateBetweenRule([])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(() => rule.validate('2023-01-01', 'path', dataSource))
                 .toThrow('DateBetweenRule requires a minimum date')
@@ -221,7 +220,7 @@ describe('Date Validation Rules', () => {
 
         it('should throw error if max date parameter is missing', () => {
             const rule = new DateBetweenRule(['2023-01-01'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(() => rule.validate('2023-01-01', 'path', dataSource))
                 .toThrow('DateBetweenRule requires a maximum date')
@@ -229,7 +228,7 @@ describe('Date Validation Rules', () => {
 
         it('should throw error if min date is invalid', () => {
             const rule = new DateBetweenRule(['not-a-date', '2023-12-31'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(() => rule.validate('2023-01-01', 'path', dataSource))
                 .toThrow('DateBetweenRule minimum date is not valid')
@@ -237,7 +236,7 @@ describe('Date Validation Rules', () => {
 
         it('should throw error if max date is invalid', () => {
             const rule = new DateBetweenRule(['2023-01-01', 'not-a-date'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(() => rule.validate('2023-01-01', 'path', dataSource))
                 .toThrow('DateBetweenRule maximum date is not valid')
@@ -247,14 +246,14 @@ describe('Date Validation Rules', () => {
     describe('DateFormatRule', () => {
         it('should validate dates with default format (YYYY-MM-DD)', () => {
             const rule = new DateFormatRule([])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(rule.validate('2023-01-01', 'path', dataSource)).toBe(true)
             expect(rule.validate('2023-12-31', 'path', dataSource)).toBe(true)
         })
 
         it('should validate dates with various formats', () => {
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             // Create rules with various formats
             const yyyymmddRule = new DateFormatRule(['YYYY-MM-DD'])
@@ -271,7 +270,7 @@ describe('Date Validation Rules', () => {
 
         it('should invalidate invalid dates', () => {
             const rule = new DateFormatRule([])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(rule.validate('not-a-date', 'path', dataSource)).toBe(false)
             expect(rule.validate('2023/13/01', 'path', dataSource)).toBe(false) // Invalid month
@@ -279,7 +278,7 @@ describe('Date Validation Rules', () => {
 
         it('should skip validation for empty values', () => {
             const rule = new DateFormatRule([])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(rule.validate('', 'path', dataSource)).toBe(true)
             expect(rule.validate(null, 'path', dataSource)).toBe(true)
@@ -290,7 +289,7 @@ describe('Date Validation Rules', () => {
     describe('Age', () => {
         it('should validate dates that represent age older than minimum', () => {
             const rule = new Age(['18'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             // With mocked date (2023-05-15)
             expect(rule.validate('2005-05-14', 'path', dataSource)).toBe(true) // Just over 18
@@ -300,7 +299,7 @@ describe('Date Validation Rules', () => {
 
         it('should invalidate dates that represent age younger than minimum', () => {
             const rule = new Age(['18'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             // With mocked date (2023-05-15)
             expect(rule.validate('2005-05-16', 'path', dataSource)).toBe(false) // Just under 18
@@ -310,7 +309,7 @@ describe('Date Validation Rules', () => {
 
         it('should handle edge case with birthdays', () => {
             const rule = new Age(['18'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             // With mocked date (2023-05-15)
             expect(rule.validate('2005-05-15', 'path', dataSource)).toBe(true) // Exactly 18 today
@@ -318,7 +317,7 @@ describe('Date Validation Rules', () => {
 
         it('should throw error if minimum age parameter is missing', () => {
             const rule = new Age([])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(() => rule.validate('2000-01-01', 'path', dataSource))
                 .toThrow('AgeRule requires a minimum age parameter')
@@ -326,7 +325,7 @@ describe('Date Validation Rules', () => {
 
         it('should throw error if minimum age is invalid', () => {
             const rule = new Age(['not-a-number'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(() => rule.validate('2000-01-01', 'path', dataSource))
                 .toThrow('AgeRule minimum age must be a non-negative integer')
@@ -334,7 +333,7 @@ describe('Date Validation Rules', () => {
 
         it('should throw error if minimum age is negative', () => {
             const rule = new Age(['-1'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(() => rule.validate('2000-01-01', 'path', dataSource))
                 .toThrow('AgeRule minimum age must be a non-negative integer')
@@ -342,7 +341,7 @@ describe('Date Validation Rules', () => {
 
         it('should invalidate invalid dates', () => {
             const rule = new Age(['18'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(rule.validate('not-a-date', 'path', dataSource)).toBe(false)
             expect(rule.validate('invalid-date', 'path', dataSource)).toBe(false)
@@ -350,7 +349,7 @@ describe('Date Validation Rules', () => {
 
         it('should skip validation for empty values', () => {
             const rule = new Age(['18'])
-            const dataSource = createRealDataSource()
+            const dataSource = {}
 
             expect(rule.validate('', 'path', dataSource)).toBe(true)
             expect(rule.validate(null, 'path', dataSource)).toBe(true)

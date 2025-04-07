@@ -1,7 +1,6 @@
 import { RuleRegistry, RuleFactory } from './RuleRegistry'
 import { Validator, type NamedRule } from './Validator'
-import { DataSourceInterface } from './datasource/DataSourceInterface'
-import { messageFormatter, CustomMessagesConfig } from './types'
+import { messageFormatter, CustomMessagesConfig, getValueFn } from './types'
 import { ValidationRule } from './ValidationRule'
 import { FunctionBasedRule, ValidationFunction } from './rule/FunctionBasedRule'
 import { RequiredRule } from './rule/Required'
@@ -36,6 +35,7 @@ import { DateBeforeRule } from './rule/DateBefore'
 import { DateBetweenRule } from './rule/DateBetween'
 import { Age } from './rule/Age'
 import { NotInListRule } from './rule/NotInList'
+import getValue from './util/getValue'
 
 function defaultMessageFormatter(
   ruleName: string,
@@ -84,13 +84,17 @@ export class ValidatorFactory {
   /** Default message formatter */
   private _defaultMessageFormatter: messageFormatter
 
+  private _defaultGetValueFn: getValueFn
+
   /**
    * Create a new validator factory
    * @param messageFormatter - Default message formatter
+   * @param getValueFn
    */
-  constructor(messageFormatter?: messageFormatter) {
+  constructor(messageFormatter?: messageFormatter, getValueFn?: getValueFn) {
     this._ruleRegistry = new RuleRegistry()
     this._defaultMessageFormatter = messageFormatter || defaultMessageFormatter
+    this._defaultGetValueFn = getValueFn || getValue
     this._registerDefaultRules()
   }
 
@@ -158,25 +162,17 @@ export class ValidatorFactory {
     // number rules
     this.register('number', NumberRule, 'This field number be a number')
     this.register('integer', IntegerRule, 'This field number be an integer')
-    this.register(
-      'gt',
-      GreaterThanRule,
-      'This field number be greater than {param:0}'
-    )
+    this.register('gt', GreaterThanRule, 'This field be greater than {param:0}')
     this.register(
       'gte',
       GreaterThanOrEqualRule,
-      'This field number be greater than or equal to {param:0}'
+      'This field be greater than or equal to {param:0}'
     )
-    this.register(
-      'lt',
-      LessThanRule,
-      'This field number be less than {param:0}'
-    )
+    this.register('lt', LessThanRule, 'This field be less than {param:0}')
     this.register(
       'lte',
       LessThanOrEqualRule,
-      'This field number be less than or equal to {param:0}'
+      'This field be less than or equal to {param:0}'
     )
 
     // string rules
@@ -284,19 +280,17 @@ export class ValidatorFactory {
 
   /**
    * Create a new validator
-   * @param dataSource - Data source
-   * @param rules - Validation rules
-   * @param customMessages - Custom error messages
-   * @returns A new validator instance
    */
   make(
     rules: Record<string, string | NamedRule[]>,
-    customMessages?: CustomMessagesConfig
+    customMessages?: CustomMessagesConfig,
+    getValueFn?: getValueFn
   ): Validator {
     // Create a new validator with our rule registry
     const validator = new Validator(this._ruleRegistry, {
       messageFormatter: this._defaultMessageFormatter,
       customMessages,
+      getValueFn: getValueFn ?? this._defaultGetValueFn,
     })
 
     // Set the rules

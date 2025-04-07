@@ -5,8 +5,9 @@ import {
   messageFormatter,
   ValidatorOptions,
   CustomMessagesConfig,
+  getValueFn,
 } from './types'
-import { DataSourceInterface } from './datasource/DataSourceInterface'
+import getValue from './util/getValue'
 
 export interface NamedRule {
   name: string
@@ -19,6 +20,7 @@ export class Validator {
   private _serverErrors: Record<string, string> = {}
   private _messageFormatter: messageFormatter
   private _ruleRegistry: RuleRegistry
+  private _getValueFn: getValueFn
   private _customMessages: CustomMessagesConfig
   private _dependents: Record<string, Set<string>> = {}
 
@@ -27,6 +29,7 @@ export class Validator {
     this._messageFormatter =
       options.messageFormatter || this._defaultMessageFormatter
     this._customMessages = options.customMessages || {}
+    this._getValueFn = options.getValueFn || getValue
   }
 
   private _defaultMessageFormatter(
@@ -63,6 +66,11 @@ export class Validator {
 
   setMessageFormatter(messageFormatter: messageFormatter): Validator {
     this._messageFormatter = messageFormatter
+    return this
+  }
+
+  setValueGetter(getValueFn: getValueFn): Validator {
+    this._getValueFn = getValueFn
     return this
   }
 
@@ -127,6 +135,7 @@ export class Validator {
         console.warn(`Unknown rule: ${ruleName}`)
         continue
       }
+      validationRule.getValueFn = this._getValueFn
 
       rules.push({
         name: ruleName,
@@ -162,10 +171,7 @@ export class Validator {
     return [...(this._dependents[path] || [])]
   }
 
-  async validatePath(
-    path: string,
-    dataSource: DataSourceInterface
-  ): Promise<boolean> {
+  async validatePath(path: string, data: object): Promise<boolean> {
     if (!path) return true
 
     delete this._errors[path]
@@ -180,13 +186,13 @@ export class Validator {
 
     if (namedRules.length === 0) return true
 
-    const value = dataSource.getValue(path)
+    const value = this._getValueFn(path, data)
 
     const errors: string[] = []
 
     for (const { name, rule } of namedRules) {
       try {
-        const isValid = await rule.validate(value, path, dataSource)
+        const isValid = await rule.validate(value, path, data)
 
         if (!isValid) {
           const errorMessage = this._messageFormatter(name, value, path, rule)
@@ -212,16 +218,13 @@ export class Validator {
     return true
   }
 
-  async validatePattern(
-    pattern: string,
-    dataSource: DataSourceInterface
-  ): Promise<boolean> {
+  async validatePattern(pattern: string, data: object): Promise<boolean> {
     if (!pattern) return true
 
-    const paths = this._findMatchingPaths(pattern, '', dataSource.getRawData())
+    const paths = this._findMatchingPaths(pattern, '', data)
 
     const results = await Promise.all(
-      paths.map((path) => this.validatePath(path, dataSource))
+      paths.map((path) => this.validatePath(path, data))
     )
 
     return results.every((result) => result)
@@ -304,24 +307,21 @@ export class Validator {
     return result
   }
 
-  async validateGroup(
-    dataSource: DataSourceInterface,
-    ...paths: string[]
-  ): Promise<boolean> {
+  async validateGroup(data: object, ...paths: string[]): Promise<boolean> {
     if (paths.length === 0) return true
 
     const results = await Promise.all(
-      paths.map((path) => this.validatePath(path, dataSource))
+      paths.map((path) => this.validatePath(path, data))
     )
 
     return results.every((result) => result)
   }
 
-  async validate(dataSource: DataSourceInterface): Promise<boolean> {
+  async validate(data: object): Promise<boolean> {
     const promises = Object.keys(this._rules).map((path) =>
       path.includes('*')
-        ? this.validatePattern(path, dataSource)
-        : this.validatePath(path, dataSource)
+        ? this.validatePattern(path, data)
+        : this.validatePath(path, data)
     )
 
     const results = await Promise.all(promises)

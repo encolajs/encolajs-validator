@@ -16,7 +16,7 @@
     - [Conditional Rules Based on Multiple Fields](#conditional-rules-based-on-multiple-fields)
     - [Interdependent Field Validation](#interdependent-field-validation)
     - [Complex Object Validation](#complex-object-validation)
-- [Custom Data Sources](#custom-data-sources)
+- [Special Data Sources](#custom-data-sources)
 
 This guide covers advanced validation patterns and features of the @encolajs/validator library.
 
@@ -344,38 +344,62 @@ const validator = factory.make({
 })
 ```
 
-## Custom Data Sources
+## Special Data Sources
 
-Create custom data sources for specialized data structures:
+Sometimes you many validate objects that have special behaviour. For example validating a model that has a `get` methods to retrieve the values.
 
 ```typescript
-class CustomModelDataSource implements DataSourceInterface {
-  constructor(private model: CustomModel) {}
+class SpecialObject {
+  private _data: Record<string, any> = {}
 
-  getValue(path: string): any {
-    return this.model.get(path)
+  get(path: string): any {
+    return this._data[path]
   }
+}
 
-  setValue(path: string, value: any): void {
-    this.model.set(path, value)
-  }
+const obj = new SpecialObject({
+  name: 'John',
+  age: 30
+})
+```
 
-  hasPath(path: string): boolean {
-    return this.model.has(path)
-  }
+For such an object the validation library needs to know how to retrieve the values from the object. For example when validating the `name` field, the library needs to know how to retrieve the name from the object.
 
-  removePath(path: string): void {
-    this.model.remove(path)
-  }
+By default the EncolaJS Validation library comes with a method that works with plain objects so most of the times you don't need to do anything. 
 
-  getRawData(): any {
-    return this.model.toJSON()
-  }
+But if you want to validate a special object, you need to configure the "value getter function" for the validator.
 
-  clone(): DataSourceInterface {
-    return new CustomModelDataSource(this.model.clone())
-  }
+In the example above, the value getter function would look like this:
+
+```typescript
+const valueGetter = (value: string, data: object) => {
+  return data.get(value)
 }
 ```
 
-For form-specific validation features like progressive validation, temporary values, and server-side errors, please refer to the [Form Validation](./form-validation.md) guide.
+Using such a function in your application can be done at 2 levels:
+
+1. **The validator factory level**: This is the default value getter function that will be used for all validators. You can set this function when creating the validator factory.
+
+```typescript
+const factory = new ValidatorFactory(messageFormatterFunction, valueGetter)
+```
+
+This will push the value getter function to all validators created by the factory.
+
+2. **The validator level**: You can also set the value getter function for a specific validator. This will override the value getter function set at the factory level.
+
+This could be useful if you want to use a different value getter function for a specific validator.
+
+```typescript
+const validator = factory.make(rules, customMessages, valueGetter)
+
+// or
+
+const validator = factory.make(rules)
+validator.setValueGetter(valueGetter)
+```
+
+**!Important**: The value getter function must work with deeply nested objects. This means that if inside a special object you have a plain object, the value getter function must be able to retrieve the value from the plain object as well. 
+
+The value getter function is called with the path to the value. The path is a string that can contain dots and brackets. For example: `user.name` or `user.address[0].street`.

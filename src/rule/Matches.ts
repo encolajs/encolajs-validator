@@ -1,9 +1,8 @@
 import { ValidationRule } from '../ValidationRule'
-import { DataSourceInterface } from '../datasource/DataSourceInterface'
 import { isEmpty } from '../util/isEmpty'
 
 export class MatchesRule extends ValidationRule {
-  protected getRegex(datasource: DataSourceInterface): RegExp {
+  protected getRegex(data: object): RegExp {
     // Get the regex pattern
     const pattern = this.parameters?.[0]
     if (!pattern) {
@@ -22,14 +21,14 @@ export class MatchesRule extends ValidationRule {
     }
   }
 
-  validate(value: any, path: string, datasource: DataSourceInterface): boolean {
+  validate(value: any, path: string, data: object): boolean {
     if (isEmpty(value)) {
       return true
     }
 
     const stringValue = String(value)
 
-    const regex = this.getRegex(datasource)
+    const regex = this.getRegex(data)
     return regex.test(stringValue)
   }
 }

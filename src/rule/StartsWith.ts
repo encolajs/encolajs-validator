@@ -1,9 +1,8 @@
 import { ValidationRule } from '../ValidationRule'
-import { DataSourceInterface } from '../datasource/DataSourceInterface'
 import { isEmpty } from '../util/isEmpty'
 
 export class StartsWithRule extends ValidationRule {
-  validate(value: any, path: string, datasource: DataSourceInterface): boolean {
+  validate(value: any, path: string, data: object): boolean {
     if (isEmpty(value)) {
       return true
     }
@@ -15,9 +14,7 @@ export class StartsWithRule extends ValidationRule {
       throw new Error('StartsWithRule requires a substring parameter')
     }
 
-    const resolvedSubstring = String(
-      this.resolveParameter(substring, datasource)
-    )
+    const resolvedSubstring = String(this.resolveParameter(substring, data))
 
     return stringValue.startsWith(resolvedSubstring)
   }

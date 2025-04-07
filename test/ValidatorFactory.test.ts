@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { ValidatorFactory } from '../src/ValidatorFactory'
 import { Validator } from '../src/Validator'
-import { createMockDataSource } from './utils'
 import { ValidationRule } from '../src/ValidationRule'
 
 describe('ValidatorFactory', () => {
@@ -35,7 +34,7 @@ describe('ValidatorFactory', () => {
             expect(result).toBe(factory)
 
             // Verify rule was registered by creating a validator and using it
-            const dataSource = createMockDataSource()
+            const dataSource = {}
             const validator = factory.make({
                 'field': 'test'
             })
@@ -55,9 +54,9 @@ describe('ValidatorFactory', () => {
             expect(result).toBe(factory)
 
             // Verify function was registered by creating a validator and using it
-            const dataSource = createMockDataSource({
+            const dataSource = {
                 'field': 'value'
-            })
+            }
             const validator = factory.make({
                 'field': 'another_test'
             })
@@ -84,7 +83,7 @@ describe('ValidatorFactory', () => {
     describe('make', () => {
         it('should create validator with rules and data source', () => {
             const factory = new ValidatorFactory()
-            const dataSource = createMockDataSource()
+            const dataSource = {}
 
             const validator = factory.make({
                 'name': 'required',
@@ -97,7 +96,7 @@ describe('ValidatorFactory', () => {
 
         it('should create validator with custom messages', () => {
             const factory = new ValidatorFactory()
-            const dataSource = createMockDataSource()
+            const dataSource = {}
             const customMessages = {
                 'name.required': 'Please enter your name',
                 'email.email': 'Please enter a valid email address'
@@ -115,7 +114,7 @@ describe('ValidatorFactory', () => {
 
         it('should support array rule format', () => {
             const factory = new ValidatorFactory()
-            const dataSource = createMockDataSource()
+            const dataSource = {}
 
             const validator = factory.make({
                 'items': [
@@ -133,7 +132,7 @@ describe('ValidatorFactory', () => {
     describe('validator', () => {
         it('should validate basic object', async () => {
             const factory = new ValidatorFactory()
-            const dataSource = createMockDataSource({
+            const dataSource = {
                 name: 'John',
                 email: 'john@example.com',
                 age: 30,
@@ -141,7 +140,7 @@ describe('ValidatorFactory', () => {
                 website: 'https://example.com',
                 items: [1, 2, 3],
                 birthdate: '2000-01-01'
-            })
+            }
 
             const validator = factory.make({
                 'name': 'required',
@@ -165,7 +164,7 @@ describe('ValidatorFactory', () => {
 
         it('should validate incomplete objects', async () => {
             const factory = new ValidatorFactory()
-            const dataSource = createMockDataSource({
+            const dataSource = {
                 skills: [
                     { name: 'JavaScript', level: null },
                     { name: 'HTML', },
@@ -176,7 +175,7 @@ describe('ValidatorFactory', () => {
                     { start_date: '2020-01-01', end_date: null, current: false },
                     { start_date: '2021-01-01', end_date: null, current: true },
                 ]
-            })
+            }
 
             const validator = factory.make({
                 'skills.*.name': 'required',

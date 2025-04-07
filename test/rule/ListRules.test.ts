@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { InListRule } from '../../src/rule/InList'
 import { NotInListRule } from '../../src/rule/NotInList'
-import { PlainObjectDataSource } from '../../src/datasource/PlainObjectDataSource'
 
 describe('InListRule', () => {
     let rule
@@ -10,7 +9,7 @@ describe('InListRule', () => {
     beforeEach(() => {
         // Create a new rule instance before each test
         rule = new InListRule()
-        datasource = new PlainObjectDataSource({})
+        datasource = {}
     })
 
     // Test empty values
@@ -150,11 +149,11 @@ describe('NotInListRule', () => {
     beforeEach(() => {
         // Create a new rule instance before each test
         rule = new NotInListRule()
-        datasource = new PlainObjectDataSource({
+        datasource = {
             blockedColor: 'red',
             blockedId: 5,
             blockedStatus: 'inactive'
-        })
+        }
     })
 
     // Test empty values
@@ -311,7 +310,7 @@ describe('NotInListRule', () => {
         expect(rule.validate('red', 'color', datasource)).toBe(false)
 
         // Change the blocked color in the datasource
-        datasource.setValue('blockedColor', 'blue')
+        datasource.blockedColor = 'blue'
 
         // Second validation call should use the updated reference
         expect(rule.validate('blue', 'color', datasource)).toBe(false)

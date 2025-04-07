@@ -1,9 +1,8 @@
 import { ValidationRule } from '../ValidationRule'
-import { DataSourceInterface } from '../datasource/DataSourceInterface'
 import { isEmpty } from '../util/isEmpty'
 
 export class SameAsRule extends ValidationRule {
-  validate(value: any, path: string, datasource: DataSourceInterface): boolean {
+  validate(value: any, path: string, data: object): boolean {
     if (isEmpty(value)) {
       return true
     }
@@ -15,10 +14,7 @@ export class SameAsRule extends ValidationRule {
     }
 
     // Resolve the comparison value (could be a reference to another field)
-    const resolvedComparisonValue = this.resolveParameter(
-      comparisonValue,
-      datasource
-    )
+    const resolvedComparisonValue = this.resolveParameter(comparisonValue, data)
 
     // Compare the values using loose equality (==) to handle type coercion
     // This allows comparing "5" with 5 as requested

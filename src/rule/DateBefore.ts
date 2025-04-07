@@ -1,9 +1,8 @@
 import { ValidationRule } from '../ValidationRule'
-import { DataSourceInterface } from '../datasource/DataSourceInterface'
 import { isEmpty } from '../util/isEmpty'
 
 export class DateBeforeRule extends ValidationRule {
-  validate(value: any, path: string, datasource: DataSourceInterface): boolean {
+  validate(value: any, path: string, data: object): boolean {
     if (isEmpty(value)) {
       return true
     }
@@ -21,7 +20,7 @@ export class DateBeforeRule extends ValidationRule {
     }
 
     // Handle field reference or direct date string
-    const resolvedCompareValue = this.resolveParameter(compareValue, datasource)
+    const resolvedCompareValue = this.resolveParameter(compareValue, data)
 
     let compareDate: Date
 

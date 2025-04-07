@@ -1,6 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
 import { ValidationRule } from '../src/ValidationRule'
-import { createMockDataSource } from './utils'
 
 // Create a concrete implementation of ValidationRule for testing
 class TestValidationRule extends ValidationRule {
@@ -23,17 +22,16 @@ describe('ValidationRule', () => {
     describe('resolveParameter', () => {
         it('should resolve field references', () => {
             const rule = new TestValidationRule()
-            const dataSource = createMockDataSource({ user: { name: 'John' } })
+            const dataSource = { user: { name: 'John' } }
 
             const result = rule.resolveParameter('@user.name', dataSource)
 
             expect(result).toBe('John')
-            expect(dataSource.getValue).toHaveBeenCalledWith('user.name')
         })
 
         it('should return original parameter if not a reference', () => {
             const rule = new TestValidationRule()
-            const dataSource = createMockDataSource()
+            const dataSource = {}
 
             expect(rule.resolveParameter('value', dataSource)).toBe('value')
             expect(rule.resolveParameter(123, dataSource)).toBe(123)
@@ -47,7 +45,7 @@ describe('ValidationRule', () => {
 
         it('should return original parameter for non-string values', () => {
             const rule = new TestValidationRule()
-            const dataSource = createMockDataSource()
+            const dataSource = { }
 
             expect(rule.resolveParameter(123, dataSource)).toBe(123)
             expect(rule.resolveParameter(true, dataSource)).toBe(true)

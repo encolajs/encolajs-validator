@@ -1,5 +1,4 @@
 import { ValidationRule } from '../ValidationRule'
-import { DataSourceInterface } from '../datasource/DataSourceInterface'
 import { isEmpty } from '../util/isEmpty'
 
 /**
@@ -8,7 +7,7 @@ import { isEmpty } from '../util/isEmpty'
 export type ValidationFunction = (
   value: any,
   path?: string,
-  datasource?: DataSourceInterface
+  data?: object
 ) => boolean | Promise<boolean>
 
 /**
@@ -29,16 +28,8 @@ export class FunctionBasedRule extends ValidationRule {
 
   /**
    * Validates a value using the validation function
-   * @param value - The value to validate
-   * @param path - The path being validated
-   * @param datasource - The data source
-   * @returns Whether the value is valid
    */
-  validate(
-    value: any,
-    path: string,
-    datasource: DataSourceInterface
-  ): boolean | Promise<boolean> {
+  validate(value: any, path: string, data: object): boolean | Promise<boolean> {
     if (isEmpty(value)) {
       return true
     }
@@ -48,11 +39,11 @@ export class FunctionBasedRule extends ValidationRule {
     if (this.parameters) {
       // Extract parameters in order (param1, param2, etc.)
       for (let i = 0; i < this.parameters.length; i++) {
-        params.push(this.resolveParameter(this.parameters[i], datasource))
+        params.push(this.resolveParameter(this.parameters[i], data))
       }
     }
 
     // Call the validation function with the resolved parameters
-    return this.validationFn.call({ params }, value, path, datasource)
+    return this.validationFn.call({ params }, value, path, data)
   }
 }

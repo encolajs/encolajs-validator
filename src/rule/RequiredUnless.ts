@@ -1,5 +1,4 @@
 import { ValidationRule } from '../ValidationRule'
-import { DataSourceInterface } from '../datasource/DataSourceInterface'
 import { isEmpty } from '../util/isEmpty'
 import PathResolver from '../PathResolver'
 import convertToBoolean from '../util/convertToBoolean'
@@ -12,10 +11,10 @@ export class RequiredUnlessRule extends ValidationRule {
    * Validates that the field is required unless another field equals a specific value
    * @param value - The value to validate
    * @param path - The path being validated
-   * @param datasource - The data source
+   * @param data - The data source
    * @returns Whether the value is valid
    */
-  validate(value: any, path: string, datasource: DataSourceInterface): boolean {
+  validate(value: any, path: string, data: object): boolean {
     // Get the parameters
     const otherPath = this.parameters?.[0]
     const expectedValue = convertToBoolean(this.parameters?.[1])
@@ -39,7 +38,7 @@ export class RequiredUnlessRule extends ValidationRule {
 
     // Resolve the expected value (could be a reference to another field)
     const resolvedExpectedValue = convertToBoolean(
-      this.resolveParameter(fieldPath, datasource)
+      this.resolveParameter(fieldPath, data)
     )
 
     // Check if the other field matches the expected value
