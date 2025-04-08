@@ -65,22 +65,6 @@ const isValid = await validator.validate(data)
 
 ## Amazing Features
 
-### Progressive Form Validation
-
-Handle form validation like a pro! Our `TentativeValuesDataSource` lets you validate data as users type, even when it's temporarily invalid:
-
-```typescript
-const dataSource = new TentativeValuesDataSource(userModel, {})
-
-// Store temporary value while user types
-dataSource.setValue('email', 'john@exa')
-
-// Validate when ready
-if (await validator.validatePath('email', dataSource)) {
-  dataSource.commit('email')
-}
-```
-
 ### Powerful Rule Chain
 
 Chain rules together for complex validation scenarios:
@@ -97,7 +81,7 @@ const rules = {
 
 ### Easy i18n Integration
 
-Translate validation messages with ease:
+Translate validation messages by bringing your own custom message formatter:
 
 ```typescript
 const validator = factory.make(rules, {

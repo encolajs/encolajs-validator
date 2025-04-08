@@ -69,7 +69,7 @@ if (validator.hasErrors()) {
 Here's how to handle progressive validation with temporary values:
 
 ```typescript
-import { ValidatorFactory, TentativeValuesDataSource } from '@encolajs/validator'
+import { ValidatorFactory } from '@encolajs/validator'
 
 // Create validator with rules
 const validator = new ValidatorFactory().make({
@@ -84,7 +84,7 @@ const data = {
 }
 
 // Create a data source that can handle temporary values
-const dataSource = new TentativeValuesDataSource(data, {})
+const dataSource = {}
 
 // Example: Validate a single field as it changes
 function validateField(field: string, value: string) {
