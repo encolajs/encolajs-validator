@@ -14,7 +14,7 @@ This document provides a comprehensive list of all built-in validation rules. Ea
 ### required
 Validates that the field is present and not empty.
 
-```typescript
+```javascript
 const rules = {
   'name': 'required'
 }
@@ -26,7 +26,7 @@ Field is required when another specified field has a value.
 Parameters:
 - `field`: Reference to another field (using @)
 
-```typescript
+```javascript
 const rules = {
   'shipping_address': 'required_with:@shipping_enabled'
 }
@@ -38,7 +38,7 @@ Field is required when another specified field is empty.
 Parameters:
 - `field`: Reference to another field (using @)
 
-```typescript
+```javascript
 const rules = {
   'phone': 'required_without:@email'
 }
@@ -51,7 +51,7 @@ Parameters:
 - `field`: Reference to another field (using @)
 - `value`: The comparison value
 
-```typescript
+```javascript
 const rules = {
   'company_name': 'required_when:type,business'
 }
@@ -64,7 +64,7 @@ Parameters:
 - `field`: Reference to another field (using @)
 - `value`: The comparison value
 
-```typescript
+```javascript
 const rules = {
   'guardian': 'required_unless:age,18'
 }
@@ -75,7 +75,7 @@ const rules = {
 ### number
 Validates that the value is a valid number.
 
-```typescript
+```javascript
 const rules = {
   'price': 'number'
 }
@@ -84,7 +84,7 @@ const rules = {
 ### integer
 Validates that the value is a valid integer.
 
-```typescript
+```javascript
 const rules = {
   'quantity': 'integer'
 }
@@ -96,7 +96,7 @@ Validates that the number is greater than the specified value.
 Parameters:
 - `value`: Number or field reference (using @)
 
-```typescript
+```javascript
 const rules = {
   'max_value': 'number|gt:@min_value',
   'age': 'number|gt:0'
@@ -109,7 +109,7 @@ Validates that the number is greater than or equal to the specified value.
 Parameters:
 - `value`: Number or field reference (using @)
 
-```typescript
+```javascript
 const rules = {
   'quantity': 'number|gte:1'
 }
@@ -121,7 +121,7 @@ Validates that the number is less than the specified value.
 Parameters:
 - `value`: Number or field reference (using @)
 
-```typescript
+```javascript
 const rules = {
   'discount': 'number|lt:100'
 }
@@ -133,7 +133,7 @@ Validates that the number is less than or equal to the specified value.
 Parameters:
 - `value`: Number or field reference (using @)
 
-```typescript
+```javascript
 const rules = {
   'progress': 'number|lte:100'
 }
@@ -144,7 +144,7 @@ const rules = {
 ### email
 Validates that the value is a valid email address.
 
-```typescript
+```javascript
 const rules = {
   'email': 'email'
 }
@@ -153,7 +153,7 @@ const rules = {
 ### url
 Validates that the value is a valid URL.
 
-```typescript
+```javascript
 const rules = {
   'website': 'url'
 }
@@ -162,7 +162,7 @@ const rules = {
 ### alpha
 Validates that the value contains only alphabetic characters.
 
-```typescript
+```javascript
 const rules = {
   'name': 'alpha'
 }
@@ -171,7 +171,7 @@ const rules = {
 ### alpha_numeric
 Validates that the value contains only alphanumeric characters.
 
-```typescript
+```javascript
 const rules = {
   'username': 'alpha_numeric'
 }
@@ -183,7 +183,7 @@ Validates that the value matches a regular expression pattern.
 Parameters:
 - `pattern`: Regular expression pattern
 
-```typescript
+```javascript
 const rules = {
   'code': 'matches:^[A-Z]{2}\\d{4}$'
 }
@@ -195,7 +195,7 @@ Validates minimum string length.
 Parameters:
 - `length`: Minimum length required
 
-```typescript
+```javascript
 const rules = {
   'password': 'min_length:8'
 }
@@ -207,7 +207,7 @@ Validates maximum string length.
 Parameters:
 - `length`: Maximum length allowed
 
-```typescript
+```javascript
 const rules = {
   'title': 'max_length:100'
 }
@@ -219,7 +219,7 @@ Validates that the string contains a specific substring.
 Parameters:
 - `substring`: The substring to search for
 
-```typescript
+```javascript
 const rules = {
   'domain': 'contains:example.com'
 }
@@ -231,7 +231,7 @@ Validates that the string starts with a specific substring.
 Parameters:
 - `substring`: The substring to check
 
-```typescript
+```javascript
 const rules = {
   'product_code': 'starts_with:PRD-'
 }
@@ -240,7 +240,7 @@ const rules = {
 ### slug
 Validates that the value is a valid URL slug (letters, numbers, dashes, underscores).
 
-```typescript
+```javascript
 const rules = {
   'post_slug': 'slug'
 }
@@ -258,7 +258,7 @@ Password must contain:
 - At least one number
 - At least one special character
 
-```typescript
+```javascript
 const rules = {
   'password': 'password:8,32'
 }
@@ -272,7 +272,7 @@ Validates minimum array length.
 Parameters:
 - `length`: Minimum number of items required
 
-```typescript
+```javascript
 const rules = {
   'tags': 'array_min:1'
 }
@@ -284,7 +284,7 @@ Validates maximum array length.
 Parameters:
 - `length`: Maximum number of items allowed
 
-```typescript
+```javascript
 const rules = {
   'selections': 'array_max:5'
 }
@@ -298,7 +298,7 @@ Validates that the value is a valid date in the specified format.
 Parameters:
 - `format`: Date format (default: 'YYYY-MM-DD')
 
-```typescript
+```javascript
 const rules = {
   'birth_date': 'date_format:YYYY-MM-DD'
 }
@@ -310,7 +310,7 @@ Validates that the date is after the specified date.
 Parameters:
 - `date`: Date string or field reference (using @)
 
-```typescript
+```javascript
 const rules = {
   'end_date': 'date_after:@start_date'
 }
@@ -322,7 +322,7 @@ Validates that the date is before the specified date.
 Parameters:
 - `date`: Date string or field reference (using @)
 
-```typescript
+```javascript
 const rules = {
   'start_date': 'date_before:@end_date'
 }
@@ -335,7 +335,7 @@ Parameters:
 - `start`: Start date string or field reference (using @)
 - `end`: End date string or field reference (using @)
 
-```typescript
+```javascript
 const rules = {
   'event_date': 'date_between:2024-01-01,2024-12-31'
 }
@@ -347,7 +347,7 @@ Validates minimum age based on date of birth.
 Parameters:
 - `years`: Minimum age in years
 
-```typescript
+```javascript
 const rules = {
   'birth_date': 'age:18'
 }
@@ -361,7 +361,7 @@ Validates that the value matches another field's value.
 Parameters:
 - `field`: Reference to another field (using @)
 
-```typescript
+```javascript
 const rules = {
   'password': 'required|password',
   'confirm_password': 'required|same_as:@password'
@@ -374,32 +374,18 @@ Validates that the value is in a list of allowed values.
 Parameters:
 - `values`: Comma-separated list of allowed values
 
-```typescript
+```javascript
 const rules = {
   'status': 'in_list:pending,approved,rejected',
   'type': 'in_list:user,admin'
 }
 ```
 
-## Rule Combinations
-
-Rules can be combined using the pipe character (|):
-
-```typescript
-const rules = {
-  'username': 'required|alpha_numeric|min_length:3|max_length:20',
-  'age': 'required|integer|gte:18',
-  'email': 'required|email',
-  'password': 'required|password:8,32',
-  'role': 'required|in_list:user,admin,editor'
-}
-```
-
 ## Field References
 
-Many rules support referencing other fields using the @ symbol:
+All built-in rules support referencing other fields using the @ symbol:
 
-```typescript
+```javascript
 const rules = {
   'min_price': 'required|number',
   'max_price': 'required|number|gt:@min_price',

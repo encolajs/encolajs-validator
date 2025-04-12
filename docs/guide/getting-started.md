@@ -1,14 +1,18 @@
-# Guide
+# Getting Started
 
-This guide covers the core concepts and patterns for using the @encolajs/validator library.
+The "Installation" page contains a code example that is simple but it does not match most use-cases.
+This is because most projects would either have their own validation rules, their own error messages.
+For this reason let's start with a step-by-step guide on configuring the EncolaJS Validator for a real project
 
-## Core Concepts
+## Validator Factory
 
-### Validator Factory
+The ValidatorFactory is the main entry point for creating validators. 
 
-The ValidatorFactory is the main entry point for creating validators. It maintains a registry of validation rules and provides a consistent way to create validator instances.
+- it maintains a registry of validation rules 
+- it is the entry point for registering new validation rules
+- it provides a consistent way to create validator instances
 
-```typescript
+```javascript
 import { ValidatorFactory } from '@encolajs/validator'
 
 // Create a factory instance
@@ -25,16 +29,16 @@ const validator = factory.make({
 
 Rules can be specified in two formats:
 
-1. String Format (recommended for simple cases):
-```typescript
+1. **String Format** (recommended for most cases):
+```javascript
 const rules = {
   'email': 'required|email',
   'age': 'required|number|min:18'
 }
 ```
 
-2. Object Format (provides more control):
-```typescript
+2. **Object Format** (provides more control):
+```javascript
 import { RequiredRule, EmailRule } from '@encolajs/validator'
 
 const rules = {
@@ -49,7 +53,7 @@ const rules = {
 
 The library uses dot notation for accessing nested properties and array indices:
 
-```typescript
+```javascript
 const rules = {
   // Simple field
   'name': 'required',
@@ -57,51 +61,21 @@ const rules = {
   // Nested object
   'address.street': 'required',
   'address.city': 'required',
-  
-  // Array elements
-  'phones[0]': 'required',
-  
+
   // All array elements
-  'items[*].price': 'number|min:0',
+  'items.*.price': 'number|min:0',
+
+  // Specific array element
+  'phones.0': 'required',
   
   // Nested arrays
-  'orders[*].items[*].quantity': 'required|integer|min:1'
+  'orders.*.items.*.quantity': 'required|integer|min:1'
 }
 ```
 
-### Data Sources
+## Basic Validation
 
-The PlainObjectDataSource provides a uniform interface for accessing data in plain JavaScript objects:
-
-```typescript
-import { PlainObjectDataSource } from '@encolajs/validator'
-
-const data = {
-  name: 'John',
-  address: {
-    street: '123 Main St',
-    city: 'Boston'
-  },
-  phones: ['555-0123', '555-0124'],
-  orders: [
-    { 
-      id: 1,
-      items: [
-        { product: 'A', quantity: 2 },
-        { product: 'B', quantity: 1 }
-      ]
-    }
-  ]
-}
-
-const dataSource = new PlainObjectDataSource(data)
-```
-
-## Validation Patterns
-
-### Basic Validation
-
-```typescript
+```javascript
 const validator = factory.make({
   'name': 'required|min_length:2',
   'email': 'required|email',
@@ -126,11 +100,11 @@ if (!isValid) {
 }
 ```
 
-### Cross-Field Validation
+## Cross-Field Validation
 
-Reference other fields in validation rules:
+You can reference other fields in validation rules:
 
-```typescript
+```javascript
 const validator = factory.make({
   'min_value': 'required|number',
   'max_value': 'required|number|gt:@min_value'
@@ -142,11 +116,11 @@ const data = {
 }
 ```
 
-### Conditional Validation
+## Conditional Validation
 
 Make fields required based on other field values:
 
-```typescript
+```javascript
 const validator = factory.make({
   'payment_type': 'required|in_list:credit,bank,cash',
   'card_number': 'required_if:payment_type,credit',
@@ -160,42 +134,26 @@ const data = {
 }
 ```
 
-### Custom Error Messages
+## Array Validation
 
-```typescript
-const validator = factory.make(rules, {
-  // Field and rule specific
-  'email:required': 'Please enter your email',
-  'email:email': 'Please enter a valid email address',
-  
-  // Using parameters
-  'age:min': 'Must be at least {param:0} years old',
-  
-  // Reference the field name
-  'items[*].price:min': '{field} must be at least {param:0}'
-})
-```
-
-### Array Validation
-
-```typescript
+```javascript
 const validator = factory.make({
-  'items[*].name': 'required|min_length:2',
-  'items[*].quantity': 'required|integer|min:1',
-  'items[*].price': 'required|number|min:0.01'
+  'items.*.name': 'required|min_length:2',
+  'items.*.quantity': 'required|integer|min:1',
+  'items.*.price': 'required|number|min:0.01'
 })
 
 const data = {
   items: [
     { name: 'A', quantity: 1, price: 10.00 },
-    { name: 'B', quantity: 0, price: -5 }  // Will fail validation
+    { name: 'B', quantity: 0, price: -5 }  // Validation will fail
   ]
 }
 ```
 
-### Complex Conditions
+## Complex Conditions
 
-```typescript
+```javascript
 const validator = factory.make({
   'subscription': 'required|in_list:basic,premium',
   'storage_gb': 'required|integer|min:5',
@@ -209,11 +167,25 @@ const data = {
 }
 ```
 
+## Custom Error Messages
+
+```javascript
+const validator = factory.make(rules, {
+  // Field and rule specific
+  'email:required': 'Please enter your email',
+  'email:email': 'Please enter a valid email address',
+  
+  // Rule with parameters should have messages with parameters
+  'age:min': 'Must be at least {param:0} years old',
+})
+```
+
+
 ## Error Handling
 
 The validator provides several methods to access validation errors:
 
-```typescript
+```javascript
 // Get all errors
 const allErrors = validator.getErrors()
 // Returns: { fieldName: string[] }
@@ -231,4 +203,24 @@ const hasEmailErrors = validator.hasErrorsForPath('email')
 // Returns: boolean
 ```
 
-For form validation specific features like progressive validation, temporary values, and server-side errors, please refer to the [Form Validation](./form-validation.md) guide.
+
+```javascript
+const validator = factory.make({
+  name: 'string',
+  age: 'number',
+  email: 'email'
+})
+
+const data = {
+  name: 'John Doe',
+  age: 30,
+  email: 'john@example.com'
+}
+
+const result = await validator.validate(data)
+if (result.isValid) {
+  console.log('Validation passed!')
+} else {
+  console.log('Validation failed:', result.errors)
+}
+```

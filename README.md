@@ -94,10 +94,7 @@ const validator = factory.make(rules, {
 
 ## Documentation
 
-- [Guide](./docs/guide.md) - Core concepts and usage patterns
-- [Validation Rules](./docs/validation-rules.md) - Complete list of built-in rules
-- [Advanced Usage](./docs/advanced-usage.md) - Advanced patterns and features
-- [Form Validation](./docs/form-validation.md) - Form-specific features
+- [https://www.encolajs.com/validation/](https://www.encolajs.com/validation/)
 
 ## Contributing
 

@@ -5,3 +5,4 @@ tmp/coverage/*
 coverage
 temp
 .idea
+docs/.vitepress/cache/
