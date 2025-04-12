@@ -217,10 +217,10 @@ const data = {
   email: 'john@example.com'
 }
 
-const result = await validator.validate(data)
-if (result.isValid) {
+const isValid = await validator.validate(data)
+if (isValid) {
   console.log('Validation passed!')
 } else {
-  console.log('Validation failed:', result.errors)
+  console.log('Validation failed:', validator.getErrors())
 }
 ```
