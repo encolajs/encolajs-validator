@@ -3,6 +3,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "Encolajs Validator",
   description: "Documentation for Encolajs Validator",
+  base: "/validator/",
   themeConfig: {
     nav: [
       { text: 'Home', link: '/' },
