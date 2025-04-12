@@ -41,4 +41,4 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./docs/.vitepress/dist/
-          server-dir: /_encolajs/validator/ 
+          server-dir: /validator/
