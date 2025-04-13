@@ -27,7 +27,7 @@ pnpm add @encolajs/validator
 
 ## Basic Usage
 
-Here's a simple example of how to use Encolajs Validator:
+Here's a simple example of how to use EncolaJS Validator:
 
 ```javascript
 import { createValidator } from '@encolajs/validator'
