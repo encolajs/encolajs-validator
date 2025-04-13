@@ -1,12 +1,14 @@
 # Form Validation
 
 Form validation has unique requirements compared to simple data validation where you validate an object in one go:
-1. server-side validation errors need to be handled
-2. some fields depend on other fields and the valid/invalid status need to be updated as soon as possible
+1. Server-side validation errors need to be handled
+2. Some fields depend on other fields and the valid/invalid status need to be updated as soon as possible
 
 ## Server-side Validation
 
-Handle validation errors returned from the server:
+For basic examples of handling server-side validation errors, see the [Common Validation Patterns](./common-patterns.md#form-submissions) guide.
+
+Here's a complete example of handling validation errors returned from the server:
 
 ```javascript
 // Set server validation errors

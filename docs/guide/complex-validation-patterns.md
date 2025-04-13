@@ -1,10 +1,24 @@
 # Complex Validation Patterns
 
+This guide covers advanced validation scenarios that go beyond simple field validation.
+
+## Conditional Validation
+
+For basic conditional validation patterns, like making fields required based on other field values, see the [Common Validation Patterns](./common-patterns.md#conditional-required-fields) guide.
+
+Here's an example of more complex conditions:
+
+```javascript
+const validator = factory.make({
+  'subscription': 'required|in_list:basic,premium',
+  'storage_gb': 'required|integer|min:5',
+  'max_users': 'required_if:subscription,premium|integer|min:5'
+})
+```
+
 ## Interdependent Field Validation
 
-In this scenario we're checking if a discount value is less than 100%, if the discount type is percentage, or if it's less than the price of the product, if the discount type is fixed.
-
-As you can see the validation rules are sent to the validator factory as a list of rules instead of a string that is being parsed by the factory.
+When the validation rule for one field depends on the value of another field, you can use custom validation functions:
 
 ```javascript
 const validator = factory.make({
@@ -29,11 +43,9 @@ const validator = factory.make({
 })
 ```
 
-## Complex Object Validation
+## Dynamic Array Validation
 
-This is a similar example as above but this time we're using wildcards for the rules.
-
-The validation ensures that the maximum quantity for the products in an order differs based on the t
+This example shows how to validate array items with rules that depend on properties of each item:
 
 ```javascript
 const validator = factory.make({
@@ -58,16 +70,22 @@ const validator = factory.make({
         const index = match[1]
         const type = datasource.products[index].type
         
-        // Different minimum quantities by type
+        // Different maximum quantities by type
         const maxQuantities = {
           digital: 5,
           physical: 10,
           service: 1
         }
         
-        return Number(value) >= (maxQuantities[type] || 0)
+        return Number(value) <= (maxQuantities[type] || 999)
       })
     }
   ]
 })
 ```
+
+## Related Topics
+
+- For more information on creating custom validation functions, see [Custom Rules](./custom-rules.md)
+- For validation of form inputs, see [Form Validation](./form-validation.md)
+- For validation with wildcards and arrays, see [Array and Wildcard Validation](./wildcard-path-validation.md)

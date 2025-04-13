@@ -15,7 +15,8 @@ export default defineConfig({
         items: [
           { text: 'Installation', link: '/guide/' },
           { text: 'Getting Started', link: '/guide/getting-started' },
-          { text: 'Built-in rules', link: '/guide/validation-rules' },
+          { text: 'Common validation patterns', link: '/guide/common-patterns' },
+          { text: 'Built-in validation rules', link: '/guide/validation-rules' },
           { text: 'Custom validation rules' , link: '/guide/custom-rules'},
           { text: 'Form validation', link: '/guide/form-validation' },
           {

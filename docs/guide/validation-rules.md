@@ -9,6 +9,21 @@ This document provides a comprehensive list of all built-in validation rules. Ea
 - [Date Rules](#date-rules): date_format, date_after, date_before, date_between, age
 - [Special Rules](#special-rules): in_list, same_as
 
+## Cross-Field Validation
+
+Many rules support referencing other fields using the @ symbol. This allows for dynamic validation based on other field values. For common examples, see the [Common Validation Patterns](./common-patterns.md#cross-field-validation) guide.
+
+Here's a quick example:
+
+```javascript
+const rules = {
+  'min_price': 'required|number',
+  'max_price': 'required|number|gt:@min_price',
+  'confirm_email': 'required|same_as:@email',
+  'checkout_date': 'required|date_after:@checkin_date'
+}
+```
+
 ## Required Rules
 
 ### required
@@ -381,17 +396,11 @@ const rules = {
 }
 ```
 
-## Field References
+## More Advanced Validation Patterns
 
-All built-in rules support referencing other fields using the @ symbol:
+For more complex validation scenarios like:
+- Validating interdependent fields
+- Custom validation functions
+- Complex object validation
 
-```javascript
-const rules = {
-  'min_price': 'required|number',
-  'max_price': 'required|number|gt:@min_price',
-  'confirm_email': 'required|same_as:@email',
-  'checkout_date': 'required|date_after:@checkin_date'
-}
-```
-
-This allows for dynamic validation based on other field values.
+See the [Complex Validation Patterns](./complex-validation-patterns.md) guide.

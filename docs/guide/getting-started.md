@@ -1,16 +1,14 @@
 # Getting Started
 
-The "Installation" page contains a code example that is simple but it does not match most use-cases.
-This is because most projects would either have their own validation rules, their own error messages.
-For this reason let's start with a step-by-step guide on configuring the EncolaJS Validator for a real project
+This guide expands on the introduction, demonstrating how to configure EncolaJS Validator for real-world projects that require custom rules and error messages.
 
 ## Validator Factory
 
-The ValidatorFactory is the main entry point for creating validators. 
+The ValidatorFactory is the main entry point for creating validators:
 
-- it maintains a registry of validation rules 
-- it is the entry point for registering new validation rules
-- it provides a consistent way to create validator instances
+- It maintains a registry of validation rules 
+- It serves as the entry point for registering new validation rules
+- It provides a consistent way to create validator instances
 
 ```javascript
 import { ValidatorFactory } from '@encolajs/validator'
@@ -25,7 +23,7 @@ const validator = factory.make({
 })
 ```
 
-### Validation Rules
+## Defining Validation Rules
 
 Rules can be specified in two formats:
 
@@ -49,7 +47,7 @@ const rules = {
 }
 ```
 
-### Path Notation
+## Path Notation
 
 The library uses dot notation for accessing nested properties and array indices:
 
@@ -62,18 +60,14 @@ const rules = {
   'address.street': 'required',
   'address.city': 'required',
 
-  // All array elements
-  'items.*.price': 'number|min:0',
-
   // Specific array element
-  'phones.0': 'required',
-  
-  // Nested arrays
-  'orders.*.items.*.quantity': 'required|integer|min:1'
+  'phones.0': 'required'
 }
 ```
 
-## Basic Validation
+For more advanced path patterns including wildcards and nested arrays, see the [Wildcard Path Validation](./wildcard-path-validation.md) guide.
+
+## Performing Validation
 
 ```javascript
 const validator = factory.make({
@@ -88,10 +82,8 @@ const data = {
   age: 25
 }
 
-const dataSource = new PlainObjectDataSource(data)
-
 // Validate all fields
-const isValid = await validator.validate(dataSource)
+const isValid = await validator.validate(data)
 
 if (!isValid) {
   // Get all validation errors
@@ -99,87 +91,6 @@ if (!isValid) {
   console.log(errors)
 }
 ```
-
-## Cross-Field Validation
-
-You can reference other fields in validation rules:
-
-```javascript
-const validator = factory.make({
-  'min_value': 'required|number',
-  'max_value': 'required|number|gt:@min_value'
-})
-
-const data = {
-  min_value: 10,
-  max_value: 5  // This will fail validation
-}
-```
-
-## Conditional Validation
-
-Make fields required based on other field values:
-
-```javascript
-const validator = factory.make({
-  'payment_type': 'required|in_list:credit,bank,cash',
-  'card_number': 'required_if:payment_type,credit',
-  'bank_account': 'required_if:payment_type,bank'
-})
-
-const data = {
-  payment_type: 'credit',
-  // card_number missing - will fail validation
-  bank_account: '1234-5678' // not required since payment_type is credit
-}
-```
-
-## Array Validation
-
-```javascript
-const validator = factory.make({
-  'items.*.name': 'required|min_length:2',
-  'items.*.quantity': 'required|integer|min:1',
-  'items.*.price': 'required|number|min:0.01'
-})
-
-const data = {
-  items: [
-    { name: 'A', quantity: 1, price: 10.00 },
-    { name: 'B', quantity: 0, price: -5 }  // Validation will fail
-  ]
-}
-```
-
-## Complex Conditions
-
-```javascript
-const validator = factory.make({
-  'subscription': 'required|in_list:basic,premium',
-  'storage_gb': 'required|integer|min:5',
-  'max_users': 'required_if:subscription,premium|integer|min:5'
-})
-
-const data = {
-  subscription: 'premium',
-  storage_gb: 100,
-  // max_users missing - will fail validation because subscription is premium
-}
-```
-
-## Custom Error Messages
-
-```javascript
-const validator = factory.make(rules, {
-  // Field and rule specific
-  'email:required': 'Please enter your email',
-  'email:email': 'Please enter a valid email address',
-  
-  // Rule with parameters should have messages with parameters
-  'age:min': 'Must be at least {param:0} years old',
-})
-```
-
 
 ## Error Handling
 
@@ -203,24 +114,13 @@ const hasEmailErrors = validator.hasErrorsForPath('email')
 // Returns: boolean
 ```
 
+## Next Steps
 
-```javascript
-const validator = factory.make({
-  name: 'string',
-  age: 'number',
-  email: 'email'
-})
+After understanding the basics, explore these topics for more advanced validation capabilities:
 
-const data = {
-  name: 'John Doe',
-  age: 30,
-  email: 'john@example.com'
-}
-
-const isValid = await validator.validate(data)
-if (isValid) {
-  console.log('Validation passed!')
-} else {
-  console.log('Validation failed:', validator.getErrors())
-}
-```
+- [Common Validation Patterns](./common-patterns.md): Frequently used validation patterns
+- [Built-in Validation Rules](./validation-rules.md): Complete list of built-in validation rules
+- [Custom Validation rulesRules](./custom-rules.md): Create your own validation rules
+- [Form Validation](./form-validation.md): Special considerations for validating forms
+- [Custom Error Messages](./custom-errors.md): Customize error messages and format
+- [Complex Validation Patterns](./complex-validation-patterns.md): Interdependent field validation

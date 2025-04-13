@@ -4,6 +4,8 @@ The EncolaJS Validation library lets you customize the error messages on multipl
 
 ## Custom error messages per validator
 
+For basic examples of custom error messages, see the [Common Validation Patterns](./common-patterns.md#custom-error-messages) guide.
+
 Error messages can include dynamic values:
 
 ```javascript
