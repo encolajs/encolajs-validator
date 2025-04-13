@@ -1,6 +1,6 @@
 # Getting Started
 
-This guide expands on the introduction, demonstrating how to configure EncolaJS Validator for real-world projects that require custom rules and error messages.
+This guide shows how to configure EncolaJS Validator for real-world projects that require custom rules and error messages.
 
 ## Validator Factory
 
@@ -65,7 +65,7 @@ const rules = {
 }
 ```
 
-For more advanced path patterns including wildcards and nested arrays, see the [Wildcard Path Validation](./wildcard-path-validation.md) guide.
+For more advanced path patterns including wildcards and nested arrays, check [Common Validation Patterns](./common-validation-patterns.md).
 
 ## Performing Validation
 
@@ -116,7 +116,7 @@ const hasEmailErrors = validator.hasErrorsForPath('email')
 
 ## Next Steps
 
-After understanding the basics, explore these topics for more advanced validation capabilities:
+Explore these topics for more advanced validation capabilities:
 
 - [Common Validation Patterns](./common-patterns.md): Frequently used validation patterns
 - [Built-in Validation Rules](./validation-rules.md): Complete list of built-in validation rules

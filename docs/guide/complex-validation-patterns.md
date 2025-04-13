@@ -88,4 +88,3 @@ const validator = factory.make({
 
 - For more information on creating custom validation functions, see [Custom Rules](./custom-rules.md)
 - For validation of form inputs, see [Form Validation](./form-validation.md)
-- For validation with wildcards and arrays, see [Array and Wildcard Validation](./wildcard-path-validation.md)
