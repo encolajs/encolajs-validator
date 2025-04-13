@@ -10,7 +10,7 @@ hero:
   text: Simple & powerful validator for browser and Node
   tagline: A powerful, flexible validation library for complex validation scenarios. Excellent DX.
   image:
-    src: /chat.png
+    src: /encolajs-validator-abstract.png
     alt: EncolaJS Validator code
 
   actions:
