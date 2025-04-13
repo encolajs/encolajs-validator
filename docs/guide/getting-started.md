@@ -65,7 +65,7 @@ const rules = {
 }
 ```
 
-For more advanced path patterns including wildcards and nested arrays, check [Common Validation Patterns](./common-validation-patterns.md).
+For more advanced path patterns including wildcards and nested arrays, check [Common Validation Patterns](./common-patterns.md).
 
 ## Performing Validation
 
