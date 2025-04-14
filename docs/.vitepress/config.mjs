@@ -5,6 +5,9 @@ export default defineConfig({
   description: "Documentation for EncolaJS Validator",
   base: "/validator/",
   themeConfig: {
+    search: {
+      provider: 'local'
+    },
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Guide', link: '/guide/' }
