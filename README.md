@@ -10,12 +10,11 @@
 
 Most validation libraries work great with simple data structures, but real-world applications are messy! We built this library to handle the tough scenarios:
 
-- ✨ **Progressive Form Validation**: Handle temporary invalid states gracefully
-- 🎯 **Type-Safe**: Full TypeScript support, works great with strongly-typed models
 - 🌳 **Deep Object Validation**: Validate nested objects and arrays with ease
 - 🔄 **Cross-Field Validation**: Reference other field values in your rules
 - 🛠 **Extensible**: Create custom rules with minimal boilerplate
 - 🌍 **i18n Ready**: Easily integrate your translation service
+- 🎯 **Type-Safe**: Full TypeScript support, works great with strongly-typed models
 - 🪶 **Light**: 20Kb minified, 5Kb gzipped
 - 🎨 **Framework Agnostic**: Use it with any UI framework
 
@@ -94,7 +93,7 @@ const validator = factory.make(rules, {
 
 ## Documentation
 
-- [https://www.encolajs.com/validation/](https://www.encolajs.com/validation/)
+[www.encolajs.com/validation/](https://www.encolajs.com/validation/)
 
 ## Contributing
 
