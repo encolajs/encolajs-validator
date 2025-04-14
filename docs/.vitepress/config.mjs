@@ -22,16 +22,16 @@ export default defineConfig({
           { text: 'Built-in validation rules', link: '/guide/validation-rules' },
           { text: 'Custom validation rules' , link: '/guide/custom-rules'},
           { text: 'Form validation', link: '/guide/form-validation' },
-          {
-            text: 'Advanced usage',
-            items: [
-              { text: 'Custom error messages' , link: '/guide/custom-errors'},
-              { text: 'Complex validation patterns' , link: '/guide/complex-validation-patterns'},
-              { text: 'Custom data sources' , link: '/guide/custom-data-sources'},
-            ]
-          },
         ]
-      }
+      },
+      {
+        text: 'Advanced usage',
+        items: [
+          { text: 'Custom error messages' , link: '/guide/custom-errors'},
+          { text: 'Complex validation patterns' , link: '/guide/complex-validation-patterns'},
+          { text: 'Custom data sources' , link: '/guide/custom-data-sources'},
+        ]
+      },
     ],
     footer: {
       message: 'MIT Licensed',
