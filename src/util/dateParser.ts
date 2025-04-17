@@ -5,12 +5,15 @@ export interface DateParseResult {
   date: Date | null
 }
 
-export function parseDate(value: string | Date, format?: string): DateParseResult {
+export function parseDate(
+  value: string | Date,
+  format?: string
+): DateParseResult {
   // If value is already a Date object, return it directly
   if (value instanceof Date) {
     return {
       isValid: !isNaN(value.getTime()),
-      date: !isNaN(value.getTime()) ? value : null
+      date: !isNaN(value.getTime()) ? value : null,
     }
   }
 
@@ -18,7 +21,7 @@ export function parseDate(value: string | Date, format?: string): DateParseResul
     const date = new Date(value)
     return {
       isValid: !isNaN(date.getTime()),
-      date: !isNaN(date.getTime()) ? date : null
+      date: !isNaN(date.getTime()) ? date : null,
     }
   }
 
@@ -36,7 +39,7 @@ export function parseDate(value: string | Date, format?: string): DateParseResul
     'dd/mm/yyyy': 'dd/MM/yyyy',
     'yyyy/mm/dd': 'yyyy/MM/dd',
     'mm-dd-yyyy': 'MM-dd-yyyy',
-    'dd-mm-yyyy': 'dd-MM-yyyy'
+    'dd-mm-yyyy': 'dd-MM-yyyy',
   }
 
   // Handle legacy format names
@@ -46,7 +49,7 @@ export function parseDate(value: string | Date, format?: string): DateParseResul
     'DD/MM/YYYY': 'dd/mm/yyyy',
     'YYYY/MM/DD': 'yyyy/mm/dd',
     'MM-DD-YYYY': 'mm-dd-yyyy',
-    'DD-MM-YYYY': 'dd-mm-yyyy'
+    'DD-MM-YYYY': 'dd-mm-yyyy',
   }
 
   let normalizedFormat = format.toLowerCase()
@@ -60,6 +63,6 @@ export function parseDate(value: string | Date, format?: string): DateParseResul
   const parsedDate = parse(value, dateFnsFormat, new Date())
   return {
     isValid: isValid(parsedDate),
-    date: isValid(parsedDate) ? parsedDate : null
+    date: isValid(parsedDate) ? parsedDate : null,
   }
-} 
+}
