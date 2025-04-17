@@ -4,6 +4,7 @@ import { DateBeforeRule } from '../../src/rule/DateBefore'
 import { DateBetweenRule } from '../../src/rule/DateBetween'
 import { DateFormatRule } from '../../src/rule/DateFormat'
 import { Age } from '../../src/rule/Age'
+import { ValidatorFactory } from '../../src/ValidatorFactory'
 
 describe('Date Validation Rules', () => {
     // For tests involving "now", we'll mock Date
@@ -244,36 +245,83 @@ describe('Date Validation Rules', () => {
     })
 
     describe('DateFormatRule', () => {
-        it('should validate dates with default format (YYYY-MM-DD)', () => {
+        it('should validate dates with default format (yy-mm-dd)', () => {
             const rule = new DateFormatRule([])
+            const dataSource = {}
+
+            expect(rule.validate('23-01-01', 'path', dataSource)).toBe(true)
+            expect(rule.validate('23-12-31', 'path', dataSource)).toBe(true)
+            expect(rule.validate('24-02-29', 'path', dataSource)).toBe(true) // Valid leap year
+            expect(rule.validate('23-13-01', 'path', dataSource)).toBe(false) // Invalid month
+            expect(rule.validate('23-04-31', 'path', dataSource)).toBe(false) // Invalid day for April
+        })
+
+        it('should validate dates with legacy YYYY-MM-DD format', () => {
+            const rule = new DateFormatRule(['YYYY-MM-DD'])
             const dataSource = {}
 
             expect(rule.validate('2023-01-01', 'path', dataSource)).toBe(true)
             expect(rule.validate('2023-12-31', 'path', dataSource)).toBe(true)
+            expect(rule.validate('2024-02-29', 'path', dataSource)).toBe(true) // Valid leap year
+            expect(rule.validate('2023-13-01', 'path', dataSource)).toBe(false) // Invalid month
+            expect(rule.validate('2023-04-31', 'path', dataSource)).toBe(false) // Invalid day for April
         })
 
-        it('should validate dates with various formats', () => {
+        it('should validate dates with various yy formats', () => {
             const dataSource = {}
 
-            // Create rules with various formats
-            const yyyymmddRule = new DateFormatRule(['YYYY-MM-DD'])
-            const mmddyyyyRule = new DateFormatRule(['MM/DD/YYYY'])
+            // Test yy-mm-dd format
+            const yymmddRule = new DateFormatRule(['yy-mm-dd'])
+            expect(yymmddRule.validate('23-01-01', 'path', dataSource)).toBe(true)
+            expect(yymmddRule.validate('23-12-31', 'path', dataSource)).toBe(true)
+            expect(yymmddRule.validate('23-13-01', 'path', dataSource)).toBe(false) // Invalid month
+
+            // Test mm/dd/yy format
+            const mmddyyRule = new DateFormatRule(['mm/dd/yy'])
+            expect(mmddyyRule.validate('01/01/23', 'path', dataSource)).toBe(true)
+            expect(mmddyyRule.validate('12/31/23', 'path', dataSource)).toBe(true)
+            expect(mmddyyRule.validate('13/01/23', 'path', dataSource)).toBe(false) // Invalid month
+
+            // Test dd/mm/yy format
+            const ddmmyyRule = new DateFormatRule(['dd/mm/yy'])
+            expect(ddmmyyRule.validate('01/01/23', 'path', dataSource)).toBe(true)
+            expect(ddmmyyRule.validate('31/12/23', 'path', dataSource)).toBe(true)
+            expect(ddmmyyRule.validate('31/13/23', 'path', dataSource)).toBe(false) // Invalid month
+        })
+
+        it('should validate dates with various legacy YYYY formats', () => {
+            const dataSource = {}
+
+            // Test DD/MM/YYYY format
             const ddmmyyyyRule = new DateFormatRule(['DD/MM/YYYY'])
-
-            // Since the actual strict format checking isn't implemented,
-            // we'll just test that valid dates are accepted regardless of format
-            expect(yyyymmddRule.validate('2023-01-01', 'path', dataSource)).toBe(true)
-            expect(mmddyyyyRule.validate('01/01/2023', 'path', dataSource)).toBe(true)
             expect(ddmmyyyyRule.validate('01/01/2023', 'path', dataSource)).toBe(true)
-            expect(ddmmyyyyRule.validate('12/12/2023', 'path', dataSource)).toBe(true)
+            expect(ddmmyyyyRule.validate('31/12/2023', 'path', dataSource)).toBe(true)
+            expect(ddmmyyyyRule.validate('31/13/2023', 'path', dataSource)).toBe(false) // Invalid month
+
+            // Test MM/DD/YYYY format
+            const mmddyyyyRule = new DateFormatRule(['MM/DD/YYYY'])
+            expect(mmddyyyyRule.validate('01/01/2023', 'path', dataSource)).toBe(true)
+            expect(mmddyyyyRule.validate('12/31/2023', 'path', dataSource)).toBe(true)
+            expect(mmddyyyyRule.validate('13/01/2023', 'path', dataSource)).toBe(false) // Invalid month
+
+            // Test YYYY/MM/DD format
+            const yyyymmddRule = new DateFormatRule(['YYYY/MM/DD'])
+            expect(yyyymmddRule.validate('2023/01/01', 'path', dataSource)).toBe(true)
+            expect(yyyymmddRule.validate('2023/12/31', 'path', dataSource)).toBe(true)
+            expect(yyyymmddRule.validate('2023/13/01', 'path', dataSource)).toBe(false) // Invalid month
         })
 
-        it('should invalidate invalid dates', () => {
-            const rule = new DateFormatRule([])
+        it('should invalidate dates with invalid values for the month/day', () => {
+            const rule = new DateFormatRule(['yy-mm-dd'])
             const dataSource = {}
 
-            expect(rule.validate('not-a-date', 'path', dataSource)).toBe(false)
-            expect(rule.validate('2023/13/01', 'path', dataSource)).toBe(false) // Invalid month
+            expect(rule.validate('23-04-31', 'path', dataSource)).toBe(false) // April has 30 days
+            expect(rule.validate('23-06-31', 'path', dataSource)).toBe(false) // June has 30 days
+            expect(rule.validate('23-09-31', 'path', dataSource)).toBe(false) // September has 30 days
+            expect(rule.validate('23-11-31', 'path', dataSource)).toBe(false) // November has 30 days
+            expect(rule.validate('23-02-30', 'path', dataSource)).toBe(false) // February never has 30 days
+            expect(rule.validate('23-02-29', 'path', dataSource)).toBe(false) // Not a leap year
+            expect(rule.validate('24-02-29', 'path', dataSource)).toBe(true)  // Valid leap year
         })
 
         it('should skip validation for empty values', () => {
@@ -283,6 +331,45 @@ describe('Date Validation Rules', () => {
             expect(rule.validate('', 'path', dataSource)).toBe(true)
             expect(rule.validate(null, 'path', dataSource)).toBe(true)
             expect(rule.validate(undefined, 'path', dataSource)).toBe(true)
+        })
+
+        it('should include the correct format in error messages', async () => {
+            // Create a validator factory to test error messages
+            const factory = new ValidatorFactory()
+            const dataSource = {
+                birth_date: '2023-13-01', // Invalid month
+                start_date: '2023-04-31', // Invalid day for April
+                expiry_date: '01/13/23',  // Invalid month
+                event_date: '31/13/2023'  // Invalid month
+            }
+
+            // Test with default format (yy-mm-dd)
+            const validator1 = factory.make({
+                'birth_date': 'date'
+            })
+            await validator1.validate(dataSource)
+            expect(validator1.getErrors()['birth_date'][0]).toContain('This field must be a valid date in the format yyyy-mm-dd')
+
+            // Test with YYYY-MM-DD format
+            const validator2 = factory.make({
+                'start_date': 'date:YYYY-MM-DD'
+            })
+            await validator2.validate(dataSource)
+            expect(validator2.getErrors()['start_date'][0]).toContain('This field must be a valid date in the format YYYY-MM-DD')
+
+            // Test with mm/dd/yy format
+            const validator3 = factory.make({
+                'expiry_date': 'date:dd/mm/yy'
+            })
+            await validator3.validate(dataSource)
+            expect(validator3.getErrors()['expiry_date'][0]).toContain('This field must be a valid date in the format dd/mm/yy')
+
+            // Test with DD/MM/YYYY format
+            const validator4 = factory.make({
+                'event_date': 'date:DD/MM/YYYY'
+            })
+            await validator4.validate(dataSource)
+            expect(validator4.getErrors()['event_date'][0]).toContain('This field must be a valid date in the format DD/MM/YYYY')
         })
     })
 

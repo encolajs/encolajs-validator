@@ -44,5 +44,12 @@ export default defineConfig({
       copyright:
         'Copyright © 2025-present EncolaJS & Contributors',
     },
+  },
+  vite: {
+    server: {
+      watch: {
+        ignored: ['**/dist/**', '**/node_modules/**', '**/.git/**'],
+      }
+    }
   }
 }) 

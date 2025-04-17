@@ -308,51 +308,111 @@ const rules = {
 ## Date Rules
 
 ### date_format
-Validates that the value is a valid date in the specified format.
+Validates that the value is a valid date in the specified format. Accepts both string dates and Date objects.
 
 Parameters:
-- `format`: Date format (default: 'YYYY-MM-DD')
+- `format`: Date format. Supports both JS-style (yy) and legacy (YYYY) formats:
+  - JS-style formats (default: 'yy-mm-dd'):
+    - 'yy-mm-dd'
+    - 'mm/dd/yy'
+    - 'dd/mm/yy'
+    - 'yy/mm/dd'
+    - 'mm-dd-yy'
+    - 'dd-mm-yy'
+  - Legacy formats:
+    - 'YYYY-MM-DD'
+    - 'MM/DD/YYYY'
+    - 'DD/MM/YYYY'
+    - 'YYYY/MM/DD'
+    - 'MM-DD-YYYY'
+    - 'DD-MM-YYYY'
+
+The rule performs strict date validation, ensuring:
+- Valid month (1-12)
+- Valid day for the given month (e.g., 30 days for April)
+- Proper leap year handling for February
 
 ```javascript
 const rules = {
-  'birth_date': 'date_format:YYYY-MM-DD'
+  // Using JS-style format (default)
+  'birth_date': 'date_format:yy-mm-dd',
+  
+  // Using legacy format
+  'start_date': 'date_format:YYYY-MM-DD',
+  
+  // Using other formats
+  'expiry_date': 'date_format:mm/yy',
+  'event_date': 'date_format:DD/MM/YYYY'
+}
+
+// Also works with Date objects
+const data = {
+  birth_date: new Date('2024-01-01'),
+  start_date: '2024-01-01'
 }
 ```
 
 ### date_after
-Validates that the date is after the specified date.
+Validates that the date is after the specified date. Accepts both string dates and Date objects.
 
 Parameters:
-- `date`: Date string or field reference (using @)
+- `date`: Date string, Date object, or field reference (using @)
+- `format`: (Optional) Date format for parsing string dates
 
 ```javascript
 const rules = {
-  'end_date': 'date_after:@start_date'
+  'end_date': 'date_after:@start_date',
+  'event_date': 'date_after:2024-01-01,yyyy-mm-dd',
+  'future_date': 'date_after:now'
+}
+
+// Also works with Date objects
+const data = {
+  end_date: new Date('2024-12-31'),
+  start_date: new Date('2024-01-01')
 }
 ```
 
 ### date_before
-Validates that the date is before the specified date.
+Validates that the date is before the specified date. Accepts both string dates and Date objects.
 
 Parameters:
-- `date`: Date string or field reference (using @)
+- `date`: Date string, Date object, or field reference (using @)
+- `format`: (Optional) Date format for parsing string dates
 
 ```javascript
 const rules = {
-  'start_date': 'date_before:@end_date'
+  'start_date': 'date_before:@end_date',
+  'event_date': 'date_before:2024-12-31,yyyy-mm-dd',
+  'past_date': 'date_before:now'
+}
+
+// Also works with Date objects
+const data = {
+  start_date: new Date('2024-01-01'),
+  end_date: new Date('2024-12-31')
 }
 ```
 
 ### date_between
-Validates that the date falls between two dates.
+Validates that the date falls between two dates. Accepts both string dates and Date objects.
 
 Parameters:
-- `start`: Start date string or field reference (using @)
-- `end`: End date string or field reference (using @)
+- `start`: Start date string, Date object, or field reference (using @)
+- `end`: End date string, Date object, or field reference (using @)
+- `format`: (Optional) Date format for parsing string dates
 
 ```javascript
 const rules = {
-  'event_date': 'date_between:2024-01-01,2024-12-31'
+  'event_date': 'date_between:2024-01-01,2024-12-31,yyyy-mm-dd',
+  'booking_date': 'date_between:@checkin_date,@checkout_date'
+}
+
+// Also works with Date objects
+const data = {
+  event_date: new Date('2024-06-15'),
+  checkin_date: new Date('2024-06-01'),
+  checkout_date: new Date('2024-06-30')
 }
 ```
 

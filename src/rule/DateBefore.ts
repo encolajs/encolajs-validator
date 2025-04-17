@@ -1,5 +1,6 @@
 import { ValidationRule } from '../ValidationRule'
 import { isEmpty } from '../util/isEmpty'
+import { parseDate } from '../util/dateParser'
 
 export class DateBeforeRule extends ValidationRule {
   validate(value: any, path: string, data: object): boolean {
@@ -7,14 +8,10 @@ export class DateBeforeRule extends ValidationRule {
       return true
     }
 
-    // Parse the date to validate
-    const valueDate = new Date(value)
-    if (isNaN(valueDate.getTime())) {
-      return false
-    }
-
-    // Get the comparison date
+    // Get the comparison date and format
     const compareValue = this.parameters?.[0]
+    const format = this.parameters?.[1]
+
     if (!compareValue) {
       throw new Error('BeforeDateRule requires a date to compare against')
     }
@@ -27,13 +24,20 @@ export class DateBeforeRule extends ValidationRule {
     if (resolvedCompareValue === 'now') {
       compareDate = new Date()
     } else {
-      compareDate = new Date(resolvedCompareValue)
-      if (isNaN(compareDate.getTime())) {
+      const parsedCompareDate = parseDate(resolvedCompareValue, format)
+      if (!parsedCompareDate.isValid) {
         throw new Error('BeforeDateRule comparison value is not a valid date')
       }
+      compareDate = parsedCompareDate.date!
+    }
+
+    // Parse the date to validate
+    const parsedValue = parseDate(value, format)
+    if (!parsedValue.isValid) {
+      return false
     }
 
     // Check if valueDate is before compareDate
-    return valueDate.getTime() < compareDate.getTime()
+    return parsedValue.date!.getTime() < compareDate.getTime()
   }
 }

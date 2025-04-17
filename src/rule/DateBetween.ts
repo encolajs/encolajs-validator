@@ -1,5 +1,6 @@
 import { ValidationRule } from '../ValidationRule'
 import { isEmpty } from '../util/isEmpty'
+import { parseDate } from '../util/dateParser'
 
 export class DateBetweenRule extends ValidationRule {
   validate(value: any, path: string, data: object): boolean {
@@ -7,20 +8,15 @@ export class DateBetweenRule extends ValidationRule {
       return true
     }
 
-    // Parse the date to validate
-    const valueDate = new Date(value)
-    if (isNaN(valueDate.getTime())) {
-      return false
-    }
-
-    // Get the minimum date
+    // Get the minimum date, maximum date and format
     const minValue = this.parameters?.[0]
+    const maxValue = this.parameters?.[1]
+    const format = this.parameters?.[2]
+
     if (!minValue) {
       throw new Error('DateBetweenRule requires a minimum date')
     }
 
-    // Get the maximum date
-    const maxValue = this.parameters?.[1]
     if (!maxValue) {
       throw new Error('DateBetweenRule requires a maximum date')
     }
@@ -33,10 +29,11 @@ export class DateBetweenRule extends ValidationRule {
     if (resolvedMinValue === 'now') {
       minDate = new Date()
     } else {
-      minDate = new Date(resolvedMinValue)
-      if (isNaN(minDate.getTime())) {
+      const parsedMinDate = parseDate(resolvedMinValue, format)
+      if (!parsedMinDate.isValid) {
         throw new Error('DateBetweenRule minimum date is not valid')
       }
+      minDate = parsedMinDate.date!
     }
 
     // Handle field reference or direct date string for max date
@@ -47,14 +44,21 @@ export class DateBetweenRule extends ValidationRule {
     if (resolvedMaxValue === 'now') {
       maxDate = new Date()
     } else {
-      maxDate = new Date(resolvedMaxValue)
-      if (isNaN(maxDate.getTime())) {
+      const parsedMaxDate = parseDate(resolvedMaxValue, format)
+      if (!parsedMaxDate.isValid) {
         throw new Error('DateBetweenRule maximum date is not valid')
       }
+      maxDate = parsedMaxDate.date!
+    }
+
+    // Parse the date to validate
+    const parsedValue = parseDate(value, format)
+    if (!parsedValue.isValid) {
+      return false
     }
 
     // Check if valueDate is between minDate and maxDate (inclusive)
-    const valueTime = valueDate.getTime()
+    const valueTime = parsedValue.date!.getTime()
     return valueTime >= minDate.getTime() && valueTime <= maxDate.getTime()
   }
 }

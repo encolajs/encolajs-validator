@@ -149,7 +149,7 @@ describe('ValidatorFactory', () => {
                 'password': 'required|password:8,16',
                 'website': 'required|url',
                 'items': 'required|array_min:1|array_max:10',
-                'birthdate': 'required|date'
+                'birthdate': 'required|date:yyyy-mm-dd'
             })
 
             // Verify the validator recognizes all default rules

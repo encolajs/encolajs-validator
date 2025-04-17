@@ -1,5 +1,6 @@
 import { ValidationRule } from '../ValidationRule'
 import { isEmpty } from '../util/isEmpty'
+import { parseDate } from '../util/dateParser'
 
 export class DateFormatRule extends ValidationRule {
   validate(value: any, path: string, data: object): boolean {
@@ -7,31 +8,20 @@ export class DateFormatRule extends ValidationRule {
       return true
     }
 
-    const format = this.parameters?.[0] || 'YYYY-MM-DD'
+    // If value is a Date object, it's always valid
+    if (value instanceof Date && !isNaN(value.getTime())) {
+      return true
+    }
 
+    if (!this.parameters?.[0]) {
+      this.parameters = ['yyyy-mm-dd']
+    }
+
+    const format = this.parameters[0]
     const strValue = String(value)
 
-    const date = new Date(strValue)
-
-    if (isNaN(date.getTime())) {
-      return false
-    }
-
-    // Advanced format validation based on the specified format
-    const formatRegexMap: Record<string, RegExp> = {
-      'YYYY-MM-DD': /^\d{4}-\d{2}-\d{2}$/,
-      'MM/DD/YYYY': /^\d{2}\/\d{2}\/\d{4}$/,
-      'DD/MM/YYYY': /^\d{2}\/\d{2}\/\d{4}$/,
-      'YYYY/MM/DD': /^\d{4}\/\d{2}\/\d{2}$/,
-      'MM-DD-YYYY': /^\d{2}-\d{2}-\d{4}$/,
-      'DD-MM-YYYY': /^\d{2}-\d{2}-\d{4}$/,
-    }
-
-    const regex = formatRegexMap[format]
-    if (!regex) {
-      return true // If format is not in our map, just validate it's a valid date
-    }
-
-    return regex.test(strValue)
+    // Use the new dateParser utility
+    const result = parseDate(strValue, format)
+    return result.isValid
   }
 }
