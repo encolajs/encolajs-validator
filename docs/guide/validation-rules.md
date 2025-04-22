@@ -357,7 +357,9 @@ Validates that the date is after the specified date. Accepts both string dates a
 
 Parameters:
 - `date`: Date string, Date object, or field reference (using @)
-- `format`: (Optional) Date format for parsing string dates
+- `format`: (Optional) Date format for parsing string dates (defaults to 'yyyy-mm-dd')
+
+> [!INFORMATION] the `date` parameter can be provided in the format of the last parameter or in the `yyyy-mm-dd` format
 
 ```javascript
 const rules = {
@@ -378,7 +380,9 @@ Validates that the date is before the specified date. Accepts both string dates 
 
 Parameters:
 - `date`: Date string, Date object, or field reference (using @)
-- `format`: (Optional) Date format for parsing string dates
+- `format`: (Optional) Date format for parsing string dates (defaults to 'yyyy-mm-dd')
+
+> [!INFORMATION] the `date` parameter can be provided in the format of the last parameter or in the `yyyy-mm-dd` format
 
 ```javascript
 const rules = {
@@ -400,7 +404,9 @@ Validates that the date falls between two dates. Accepts both string dates and D
 Parameters:
 - `start`: Start date string, Date object, or field reference (using @)
 - `end`: End date string, Date object, or field reference (using @)
-- `format`: (Optional) Date format for parsing string dates
+- `format`: (Optional) Date format for parsing string dates (defaults to 'yyyy-mm-dd')
+
+> [!INFORMATION] the `start` and `end` can be provided in the format of the last parameter or in the `yyyy-mm-dd` format
 
 ```javascript
 const rules = {

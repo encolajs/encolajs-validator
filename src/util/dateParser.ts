@@ -60,9 +60,35 @@ export function parseDate(
   const dateFnsFormat = formatMap[normalizedFormat] || normalizedFormat
 
   // Parse the date using date-fns and validate it
-  const parsedDate = parse(value, dateFnsFormat, new Date())
+  let parsedDate: Date
+  try {
+    parsedDate = parse(value, dateFnsFormat, new Date())
+  } catch (error) {
+    // If there's an error parsing the date (e.g., invalid format), return invalid result
+    return {
+      isValid: false,
+      date: null,
+    }
+  }
+
+  if (!isValid(parsedDate)) {
+    return {
+      isValid: false,
+      date: null,
+    }
+  }
+
+  // Create a new Date with the same year, month, and day, but with time set to midnight UTC
+  const normalizedDate = new Date(
+    Date.UTC(
+      parsedDate.getFullYear(),
+      parsedDate.getMonth(),
+      parsedDate.getDate()
+    )
+  )
+
   return {
-    isValid: isValid(parsedDate),
-    date: isValid(parsedDate) ? parsedDate : null,
+    isValid: true,
+    date: normalizedDate,
   }
 }

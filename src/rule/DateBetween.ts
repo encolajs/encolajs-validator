@@ -8,57 +8,73 @@ export class DateBetweenRule extends ValidationRule {
       return true
     }
 
-    // Get the minimum date, maximum date and format
-    const minValue = this.parameters?.[0]
-    const maxValue = this.parameters?.[1]
-    const format = this.parameters?.[2]
+    // Get the start and end dates and format
+    const startValue = this.parameters?.[0]
+    const endValue = this.parameters?.[1]
+    const format = this.parameters?.[2] || 'yyyy-mm-dd'
 
-    if (!minValue) {
-      throw new Error('DateBetweenRule requires a minimum date')
+    if (!startValue || !endValue) {
+      throw new Error('DateBetweenRule requires both start and end dates')
     }
 
-    if (!maxValue) {
-      throw new Error('DateBetweenRule requires a maximum date')
-    }
+    // Handle field references or direct date strings
+    const resolvedStartValue = this.resolveParameter(startValue, data)
+    const resolvedEndValue = this.resolveParameter(endValue, data)
 
-    // Handle field reference or direct date string for min date
-    const resolvedMinValue = this.resolveParameter(minValue, data)
-
-    let minDate: Date
-
-    if (resolvedMinValue === 'now') {
-      minDate = new Date()
+    // Parse start date
+    let startDate: Date
+    if (resolvedStartValue === 'now') {
+      startDate = new Date()
     } else {
-      const parsedMinDate = parseDate(resolvedMinValue, format)
-      if (!parsedMinDate.isValid) {
-        throw new Error('DateBetweenRule minimum date is not valid')
+      // First try with the provided format
+      let parsedStartDate = parseDate(resolvedStartValue, format)
+
+      // If that fails, try with the default format
+      if (!parsedStartDate.isValid && format) {
+        parsedStartDate = parseDate(resolvedStartValue, 'yyyy-mm-dd')
       }
-      minDate = parsedMinDate.date!
+
+      if (!parsedStartDate.isValid) {
+        throw new Error('DateBetweenRule start date is not valid')
+      }
+      startDate = parsedStartDate.date!
     }
 
-    // Handle field reference or direct date string for max date
-    const resolvedMaxValue = this.resolveParameter(maxValue, data)
-
-    let maxDate: Date
-
-    if (resolvedMaxValue === 'now') {
-      maxDate = new Date()
+    // Parse end date
+    let endDate: Date
+    if (resolvedEndValue === 'now') {
+      endDate = new Date()
     } else {
-      const parsedMaxDate = parseDate(resolvedMaxValue, format)
-      if (!parsedMaxDate.isValid) {
-        throw new Error('DateBetweenRule maximum date is not valid')
+      // First try with the provided format
+      let parsedEndDate = parseDate(resolvedEndValue, format)
+
+      // If that fails, try with the default format
+      if (!parsedEndDate.isValid && format) {
+        parsedEndDate = parseDate(resolvedEndValue, 'yyyy-mm-dd')
       }
-      maxDate = parsedMaxDate.date!
+
+      if (!parsedEndDate.isValid) {
+        throw new Error('DateBetweenRule end date is not valid')
+      }
+      endDate = parsedEndDate.date!
     }
 
     // Parse the date to validate
-    const parsedValue = parseDate(value, format)
+    let parsedValue = parseDate(value, format)
+
+    // If that fails, try with the default format
+    if (!parsedValue.isValid && format) {
+      parsedValue = parseDate(value, 'yy-mm-dd')
+    }
+
     if (!parsedValue.isValid) {
       return false
     }
 
-    // Check if valueDate is between minDate and maxDate (inclusive)
-    const valueTime = parsedValue.date!.getTime()
-    return valueTime >= minDate.getTime() && valueTime <= maxDate.getTime()
+    const valueDate = parsedValue.date!
+    return (
+      valueDate.getTime() >= startDate.getTime() &&
+      valueDate.getTime() <= endDate.getTime()
+    )
   }
 }

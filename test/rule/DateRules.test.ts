@@ -95,6 +95,17 @@ describe('Date Validation Rules', () => {
             expect(rule.validate(null, 'path', dataSource)).toBe(true)
             expect(rule.validate(undefined, 'path', dataSource)).toBe(true)
         })
+
+        it('should support custom date format', () => {
+            const rule = new DateAfter(['2023-01-01', 'mm/dd/yy'])
+            const dataSource = {}
+
+            expect(rule.validate('01/02/23', 'path', dataSource)).toBe(true)
+            expect(rule.validate('02/01/23', 'path', dataSource)).toBe(true)
+            expect(rule.validate('01/01/24', 'path', dataSource)).toBe(true)
+            expect(rule.validate('01/01/23', 'path', dataSource)).toBe(false)
+            expect(rule.validate('12/31/22', 'path', dataSource)).toBe(false)
+        })
     })
 
     describe('DateBeforeRule', () => {
@@ -156,6 +167,17 @@ describe('Date Validation Rules', () => {
             expect(() => rule.validate('2023-01-01', 'path', dataSource))
                 .toThrow('BeforeDateRule comparison value is not a valid date')
         })
+
+        it('should support custom date format', () => {
+            const rule = new DateBeforeRule(['2023-01-01', 'mm/dd/yy'])
+            const dataSource = {}
+
+            expect(rule.validate('12/31/22', 'path', dataSource)).toBe(true)
+            expect(rule.validate('01/01/22', 'path', dataSource)).toBe(true)
+            expect(rule.validate('01/01/21', 'path', dataSource)).toBe(true)
+            expect(rule.validate('01/01/23', 'path', dataSource)).toBe(false)
+            expect(rule.validate('01/02/23', 'path', dataSource)).toBe(false)
+        })
     })
 
     describe('DateBetweenRule', () => {
@@ -216,7 +238,7 @@ describe('Date Validation Rules', () => {
             const dataSource = {}
 
             expect(() => rule.validate('2023-01-01', 'path', dataSource))
-                .toThrow('DateBetweenRule requires a minimum date')
+                .toThrow('DateBetweenRule requires both start and end dates')
         })
 
         it('should throw error if max date parameter is missing', () => {
@@ -224,7 +246,7 @@ describe('Date Validation Rules', () => {
             const dataSource = {}
 
             expect(() => rule.validate('2023-01-01', 'path', dataSource))
-                .toThrow('DateBetweenRule requires a maximum date')
+                .toThrow('DateBetweenRule requires both start and end dates')
         })
 
         it('should throw error if min date is invalid', () => {
@@ -232,7 +254,7 @@ describe('Date Validation Rules', () => {
             const dataSource = {}
 
             expect(() => rule.validate('2023-01-01', 'path', dataSource))
-                .toThrow('DateBetweenRule minimum date is not valid')
+                .toThrow('DateBetweenRule start date is not valid')
         })
 
         it('should throw error if max date is invalid', () => {
@@ -240,7 +262,18 @@ describe('Date Validation Rules', () => {
             const dataSource = {}
 
             expect(() => rule.validate('2023-01-01', 'path', dataSource))
-                .toThrow('DateBetweenRule maximum date is not valid')
+                .toThrow('DateBetweenRule end date is not valid')
+        })
+
+        it('should support custom date format', () => {
+            const rule = new DateBetweenRule(['2023-01-01', '2023-12-31', 'mm/dd/yy'])
+            const dataSource = {}
+
+            expect(rule.validate('01/01/23', 'path', dataSource)).toBe(true) // Inclusive
+            expect(rule.validate('06/15/23', 'path', dataSource)).toBe(true)
+            expect(rule.validate('12/31/23', 'path', dataSource)).toBe(true) // Inclusive
+            expect(rule.validate('12/31/22', 'path', dataSource)).toBe(false)
+            expect(rule.validate('01/01/24', 'path', dataSource)).toBe(false)
         })
     })
 
@@ -441,6 +474,17 @@ describe('Date Validation Rules', () => {
             expect(rule.validate('', 'path', dataSource)).toBe(true)
             expect(rule.validate(null, 'path', dataSource)).toBe(true)
             expect(rule.validate(undefined, 'path', dataSource)).toBe(true)
+        })
+
+        it('should support custom date format', () => {
+            const rule = new Age(['18', 'mm/dd/yy'])
+            const dataSource = {}
+
+            // With mocked date (2023-05-15)
+            expect(rule.validate('05/14/05', 'path', dataSource)).toBe(true) // Just over 18
+            expect(rule.validate('01/01/00', 'path', dataSource)).toBe(true) // Well over 18
+            expect(rule.validate('05/16/05', 'path', dataSource)).toBe(false) // Just under 18
+            expect(rule.validate('01/01/10', 'path', dataSource)).toBe(false) // Well under 18
         })
     })
 })

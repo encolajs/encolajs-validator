@@ -16,7 +16,13 @@ export default defineConfig({
     ],
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Guide', link: '/guide/' }
+      { text: 'Guide', link: '/guide/' },
+      { text: 'More...',
+        items: [
+          {text: 'EncolaJS Enforma', link: 'https://encolajs.com/enforma/'},
+          {text: 'EncolaJS Hydrator', link: 'https://encolajs.com/hydrator/'},
+        ]
+      },
     ],
     sidebar: [
       {

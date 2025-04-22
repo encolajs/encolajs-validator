@@ -1,5 +1,6 @@
 import { ValidationRule } from '../ValidationRule'
 import { isEmpty } from '../util/isEmpty'
+import { parseDate } from '../util/dateParser'
 
 export class DateAfter extends ValidationRule {
   validate(value: any, path: string, data: object): boolean {
@@ -7,14 +8,10 @@ export class DateAfter extends ValidationRule {
       return true
     }
 
-    // Parse the date to validate
-    const valueDate = new Date(value)
-    if (isNaN(valueDate.getTime())) {
-      return false
-    }
-
-    // Get the comparison date
+    // Get the comparison date and format
     const compareValue = this.parameters?.[0]
+    const format = this.parameters?.[1] || 'yyyy-mm-dd'
+
     if (!compareValue) {
       throw new Error('AfterDateRule requires a date to compare against')
     }
@@ -27,13 +24,33 @@ export class DateAfter extends ValidationRule {
     if (resolvedCompareValue === 'now') {
       compareDate = new Date()
     } else {
-      compareDate = new Date(resolvedCompareValue)
-      if (isNaN(compareDate.getTime())) {
+      // First try with the provided format
+      let parsedCompareDate = parseDate(resolvedCompareValue, format)
+
+      // If that fails, try with the default format
+      if (!parsedCompareDate.isValid && format) {
+        parsedCompareDate = parseDate(resolvedCompareValue, 'yyyy-mm-dd')
+      }
+
+      if (!parsedCompareDate.isValid) {
         throw new Error('AfterDateRule comparison value is not a valid date')
       }
+      compareDate = parsedCompareDate.date!
+    }
+
+    // Parse the date to validate
+    let parsedValue = parseDate(value, format)
+
+    // If that fails, try with the default format
+    if (!parsedValue.isValid && format) {
+      parsedValue = parseDate(value, 'yy-mm-dd')
+    }
+
+    if (!parsedValue.isValid) {
+      return false
     }
 
     // Check if valueDate is after compareDate
-    return valueDate.getTime() > compareDate.getTime()
+    return parsedValue.date!.getTime() > compareDate.getTime()
   }
 }

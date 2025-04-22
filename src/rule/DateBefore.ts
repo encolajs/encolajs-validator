@@ -10,7 +10,7 @@ export class DateBeforeRule extends ValidationRule {
 
     // Get the comparison date and format
     const compareValue = this.parameters?.[0]
-    const format = this.parameters?.[1]
+    const format = this.parameters?.[1] || 'yyyy-mm-dd'
 
     if (!compareValue) {
       throw new Error('BeforeDateRule requires a date to compare against')
@@ -24,7 +24,14 @@ export class DateBeforeRule extends ValidationRule {
     if (resolvedCompareValue === 'now') {
       compareDate = new Date()
     } else {
-      const parsedCompareDate = parseDate(resolvedCompareValue, format)
+      // First try with the provided format
+      let parsedCompareDate = parseDate(resolvedCompareValue, format)
+
+      // If that fails, try with the default format
+      if (!parsedCompareDate.isValid && format) {
+        parsedCompareDate = parseDate(resolvedCompareValue, 'yyyy-mm-dd')
+      }
+
       if (!parsedCompareDate.isValid) {
         throw new Error('BeforeDateRule comparison value is not a valid date')
       }
@@ -32,7 +39,13 @@ export class DateBeforeRule extends ValidationRule {
     }
 
     // Parse the date to validate
-    const parsedValue = parseDate(value, format)
+    let parsedValue = parseDate(value, format)
+
+    // If that fails, try with the default format
+    if (!parsedValue.isValid && format) {
+      parsedValue = parseDate(value, 'yy-mm-dd')
+    }
+
     if (!parsedValue.isValid) {
       return false
     }
