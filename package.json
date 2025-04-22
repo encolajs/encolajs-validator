@@ -1,6 +1,6 @@
 {
     "name": "@encolajs/validator",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "Advanced validation library for browsers (especially) and Node. Designed to handle complex validation scenarios and integrate with any UI library like Vue, React etc",
     "type": "module",
     "exports": {
