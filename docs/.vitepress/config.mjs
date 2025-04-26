@@ -16,7 +16,7 @@ export default defineConfig({
     ],
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Guide', link: '/guide/' },
+      { text: 'Documentation', link: '/docs/' },
       { text: 'More...',
         items: [
           {text: 'EncolaJS Enforma', link: 'https://encolajs.com/enforma/'},
@@ -28,20 +28,20 @@ export default defineConfig({
       {
         text: 'Guide',
         items: [
-          { text: 'Installation', link: '/guide/' },
-          { text: 'Getting Started', link: '/guide/getting-started' },
-          { text: 'Common validation patterns', link: '/guide/common-patterns' },
-          { text: 'Built-in validation rules', link: '/guide/validation-rules' },
-          { text: 'Custom validation rules' , link: '/guide/custom-rules'},
-          { text: 'Form validation', link: '/guide/form-validation' },
+          { text: 'Installation', link: '/docs/' },
+          { text: 'Getting Started', link: '/docs/getting-started' },
+          { text: 'Common validation patterns', link: '/docs/common-patterns' },
+          { text: 'Built-in validation rules', link: '/docs/validation-rules' },
+          { text: 'Custom validation rules' , link: '/docs/custom-rules'},
+          { text: 'Form validation', link: '/docs/form-validation' },
         ]
       },
       {
         text: 'Advanced usage',
         items: [
-          { text: 'Custom error messages' , link: '/guide/custom-errors'},
-          { text: 'Complex validation patterns' , link: '/guide/complex-validation-patterns'},
-          { text: 'Custom data sources' , link: '/guide/custom-data-sources'},
+          { text: 'Custom error messages' , link: '/docs/custom-errors'},
+          { text: 'Complex validation patterns' , link: '/docs/complex-validation-patterns'},
+          { text: 'Custom data sources' , link: '/docs/custom-data-sources'},
         ]
       },
     ],
