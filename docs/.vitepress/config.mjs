@@ -4,6 +4,7 @@ export default defineConfig({
   title: "EncolaJS Validator",
   description: "Documentation for EncolaJS Validator",
   base: "/validator/",
+  head: [['link', { rel: 'icon', href: '/validator/favicon.ico' }]],
   themeConfig: {
     search: {
       provider: 'local'
@@ -11,6 +12,7 @@ export default defineConfig({
     editLink: {
       pattern: 'https://github.com/encolajs/encolajs-validator/tree/main/docs/:path'
     },
+    logo: '/logo.png',
     socialLinks: [
       { icon: 'github', link: 'https://github.com/encolajs/encolajs-validator' },
     ],
