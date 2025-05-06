@@ -8,6 +8,7 @@ import {
   getValueFn,
 } from './types'
 import getValue from './util/getValue'
+import { defaultMessageFormatter } from './ValidatorFactory'
 
 export interface NamedRule {
   name: string
@@ -27,41 +28,9 @@ export class Validator {
   constructor(ruleRegistry: RuleRegistry, options: ValidatorOptions = {}) {
     this._ruleRegistry = ruleRegistry
     this._messageFormatter =
-      options.messageFormatter || this._defaultMessageFormatter
+      options.messageFormatter || defaultMessageFormatter
     this._customMessages = options.customMessages || {}
     this._getValueFn = options.getValueFn || getValue
-  }
-
-  private _defaultMessageFormatter(
-    ruleName: string,
-    value: any,
-    path: string,
-    validationRule: ValidationRule
-  ): string {
-    const defaultMessage =
-      this._ruleRegistry.getDefaultMessage(ruleName) || 'Validation failed'
-
-    const customMessageKey = `${path}:${ruleName}`
-    let message = this._customMessages[customMessageKey] || defaultMessage
-
-    message = message.replace(
-      /{value}/g,
-      String(value === undefined ? 'undefined' : value)
-    )
-
-    message = message.replace(/{param:(\w+)}/g, (match, paramName) => {
-      const paramValue = validationRule.parameters?.[paramName]
-
-      if (typeof paramValue === 'string' && paramValue.startsWith('@')) {
-        return paramValue.substring(1)
-      }
-
-      return String(paramValue || '')
-    })
-
-    message = message.replace(/{field}/g, path)
-
-    return message
   }
 
   setMessageFormatter(messageFormatter: messageFormatter): Validator {

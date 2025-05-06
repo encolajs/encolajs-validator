@@ -14,6 +14,10 @@ describe('ValidatorFactory', () => {
             const customFormatter = vi.fn()
             const factory = new ValidatorFactory(customFormatter)
             expect(factory).toBeInstanceOf(ValidatorFactory)
+            // @ts-expect-error testing internals
+            expect(factory._defaultMessageFormatter).toBe(customFormatter)
+            // @ts-expect-error testing internals
+            expect(factory.make({})._messageFormatter).toBe(customFormatter)
         })
     })
 
@@ -160,6 +164,34 @@ describe('ValidatorFactory', () => {
             expect(await validator.validatePath('website', dataSource)).toBe(true)
             expect(await validator.validatePath('items', dataSource)).toBe(true)
             expect(await validator.validatePath('birthdate', dataSource)).toBe(true)
+        })
+
+
+        it('should use custom messages', async () => {
+            const factory = new ValidatorFactory()
+            const dataSource = {
+              email: 'not email',
+              contact: {
+                email: 'not email'
+              }
+            }
+
+            const emailMsg = 'You must provide an valid email address'
+            const validator = factory.make({
+                'name': 'required',
+                'email': 'required|email',
+                'contact.email': 'required|email', // deep path
+            }, {
+                'email:email': emailMsg,
+                'contact.email:email': emailMsg
+            })
+
+            await validator.validate(dataSource)
+
+            const errors = validator.getErrors()
+
+            expect(errors['email']).toEqual([emailMsg])
+            expect(errors['contact.email']).toEqual([emailMsg])
         })
 
         it('should validate incomplete objects', async () => {

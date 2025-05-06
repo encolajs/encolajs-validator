@@ -37,7 +37,7 @@ import { Age } from './rule/Age'
 import { NotInListRule } from './rule/NotInList'
 import getValue from './util/getValue'
 
-function defaultMessageFormatter(
+export function defaultMessageFormatter(
   ruleName: string,
   value: any,
   path: string,
@@ -47,8 +47,11 @@ function defaultMessageFormatter(
   const defaultMessage =
     this._ruleRegistry.getDefaultMessage(ruleName) || 'Validation failed'
 
+  const customMessageKey = `${path}:${ruleName}`
+  let message = this._customMessages[customMessageKey] || defaultMessage
+
   // Replace {value}
-  let message = defaultMessage.replace(
+  message = message.replace(
     /{value}/g,
     String(value === undefined ? 'undefined' : value)
   )
