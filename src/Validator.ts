@@ -27,8 +27,7 @@ export class Validator {
 
   constructor(ruleRegistry: RuleRegistry, options: ValidatorOptions = {}) {
     this._ruleRegistry = ruleRegistry
-    this._messageFormatter =
-      options.messageFormatter || defaultMessageFormatter
+    this._messageFormatter = options.messageFormatter || defaultMessageFormatter
     this._customMessages = options.customMessages || {}
     this._getValueFn = options.getValueFn || getValue
   }
@@ -131,7 +130,7 @@ export class Validator {
             }
             this._dependents[referencedField].add(path)
             if (!this._dependents[path]) {
-              this._dependents[path] =  new Set()
+              this._dependents[path] = new Set()
             }
             this._dependents[path].add(referencedField)
           }
