@@ -194,6 +194,24 @@ describe('ValidatorFactory', () => {
             expect(errors['contact.email']).toEqual([emailMsg])
         })
 
+        it('should generate dependency map', async () => {
+            const factory = new ValidatorFactory()
+            const dataSource = {
+              range: {
+                min: 3,
+                max: 5
+              }
+            }
+
+            const validator = factory.make({
+                'range.min': 'required',
+                'range.max': 'required|gt:@range.min',
+            })
+
+            expect(validator.getDependentFields('range.min')).toStrictEqual(['range.max'])
+            expect(validator.getDependentFields('range.max')).toStrictEqual(['range.min'])
+        })
+
         it('should validate incomplete objects', async () => {
             const factory = new ValidatorFactory()
             const dataSource = {

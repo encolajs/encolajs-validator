@@ -130,6 +130,10 @@ export class Validator {
               this._dependents[referencedField] = new Set()
             }
             this._dependents[referencedField].add(path)
+            if (!this._dependents[path]) {
+              this._dependents[path] =  new Set()
+            }
+            this._dependents[path].add(referencedField)
           }
         }
       }
