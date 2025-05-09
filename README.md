@@ -43,7 +43,7 @@ const validator = factory.make({
   'email': 'required|email',
   'password': 'required|password:8,32',
   'profile.name': 'required|min_length:2',
-  'items[*].quantity': 'required|integer|min:1'
+  'items.*.quantity': 'required|integer|min:1'
 })
 
 // Validate data
@@ -73,7 +73,7 @@ const rules = {
   'card_type': 'required|in_list:visa,mastercard',
   'card_number': 'required_if:card_type,visa|matches:^4\\d{15}$',
   'expiry_date': 'required|date_format:MM/YY|date_after:now',
-  'items[*].price': 'required|number|min:0.01',
+  'items.*.price': 'required|number|min:0.01',
   'total': 'required|number|gte:@subtotal'
 }
 ```
@@ -93,7 +93,7 @@ const validator = factory.make(rules, {
 
 ## Documentation
 
-[www.encolajs.com/validation/](https://www.encolajs.com/validation/)
+[www.encolajs.com/validator/](https://www.encolajs.com/validator/)
 
 ## Contributing
 
