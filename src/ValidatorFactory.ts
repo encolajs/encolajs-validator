@@ -36,46 +36,7 @@ import { DateBetweenRule } from './rule/DateBetween'
 import { Age } from './rule/Age'
 import { NotInListRule } from './rule/NotInList'
 import getValue from './util/getValue'
-
-export function defaultMessageFormatter(
-  ruleName: string,
-  value: any,
-  path: string,
-  validationRule: ValidationRule
-): string {
-  // Get default message from rule registry
-  const defaultMessage =
-    this._ruleRegistry.getDefaultMessage(ruleName) || 'Validation failed'
-
-  const customMessageKey = `${path}:${ruleName}`
-  let message = this._customMessages[customMessageKey] || defaultMessage
-
-  // Replace {value}
-  message = message.replace(
-    /{value}/g,
-    String(value === undefined ? 'undefined' : value)
-  )
-
-  // Replace {param:name} with parameters from rule
-  message = message.replace(
-    /{param:(\d+)}/g,
-    (match: string, paramName: string) => {
-      const paramValue = validationRule.parameters?.[parseInt(paramName)]
-
-      // If parameter is a field reference (starts with @), use the field name without @
-      if (typeof paramValue === 'string' && paramValue.startsWith('@')) {
-        return paramValue.substring(1) // Return field name without @
-      }
-
-      return String(paramValue || '')
-    }
-  )
-
-  // Replace {field} with the field name
-  message = message.replace(/{field}/g, path)
-
-  return message
-}
+import defaultMessageFormatter from './util/defaultMessageFormatter'
 
 /**
  * Factory for creating validators with pre-configured rules and messages

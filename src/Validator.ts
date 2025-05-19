@@ -8,7 +8,7 @@ import {
   getValueFn,
 } from './types'
 import getValue from './util/getValue'
-import { defaultMessageFormatter } from './ValidatorFactory'
+import defaultMessageFormatter from './util/defaultMessageFormatter'
 
 export interface NamedRule {
   name: string
