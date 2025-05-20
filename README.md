@@ -4,7 +4,7 @@
 
 ![CI](https://github.com/encolajs/encolajs-validator/workflows/CI/badge.svg)
 [![npm version](https://badge.fury.io/js/@encolajs%2Fvalidator.svg)](https://badge.fury.io/js/@encolajs%2Fvalidator)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## Why Another Validation Library?
 
