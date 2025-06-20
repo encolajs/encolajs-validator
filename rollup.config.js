@@ -20,6 +20,13 @@ export default [
         format: 'cjs',
         sourcemap: true,
         exports: 'named'
+      },
+      {
+        file: 'dist/index.umd.js',
+        format: 'umd',
+        sourcemap: true,
+        exports: 'named',
+        name: 'EncolaValidator'
       }
     ],
     plugins: [
