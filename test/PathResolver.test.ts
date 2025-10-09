@@ -102,6 +102,7 @@ describe('PathResolver', () => {
             expect(PathResolver.matchesPattern('users.0.name', 'users.*.name')).toBe(true)
             expect(PathResolver.matchesPattern('users.0.name', 'users.0.*')).toBe(true)
             expect(PathResolver.matchesPattern('users.0.name', '*.*.name')).toBe(true)
+            expect(PathResolver.matchesPattern('users.0.name', 'users')).toBe(false)
         })
 
         it('should not match non-matching patterns', () => {
