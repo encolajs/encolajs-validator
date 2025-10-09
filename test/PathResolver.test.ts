@@ -99,9 +99,9 @@ describe('PathResolver', () => {
         })
 
         it('should match wildcard patterns', () => {
-            expect(PathResolver.matchesPattern('users.0.name', 'users.*')).toBe(true)
+            expect(PathResolver.matchesPattern('users.0.name', 'users.*.name')).toBe(true)
             expect(PathResolver.matchesPattern('users.0.name', 'users.0.*')).toBe(true)
-            expect(PathResolver.matchesPattern('users.0.name', '*')).toBe(true)
+            expect(PathResolver.matchesPattern('users.0.name', '*.*.name')).toBe(true)
         })
 
         it('should not match non-matching patterns', () => {

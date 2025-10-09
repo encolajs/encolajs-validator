@@ -97,8 +97,8 @@ export default class PathResolver {
     const pathSegments = this.splitPath(path)
     const patternSegments = this.splitPath(pattern)
 
-    // If the pattern has more segments than the path, it can't match
-    if (patternSegments.length > pathSegments.length) return false
+    // If the pattern has different
+    if (patternSegments.length !== pathSegments.length) return false
 
     // Check each segment for matching
     for (let i = 0; i < patternSegments.length; i++) {
