@@ -16,7 +16,7 @@ export default [
         sourcemap: true,
       },
       {
-        file: 'dist/index.cjs.js',
+        file: 'dist/index.cjs', // .cjs because the package is "type": "module"
         format: 'cjs',
         sourcemap: true,
         exports: 'named'
